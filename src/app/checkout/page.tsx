@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Lock } from "lucide-react";
@@ -8,20 +8,10 @@ import { Navbar }  from "@/components/layout/Navbar";
 import { Footer }  from "@/components/layout/Footer";
 import { useCart } from "@/context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
-
-// ─────────────────────────────────────────────────────────────
-// ATOMS
-// ─────────────────────────────────────────────────────────────
+import { Ornament } from "@/components/ui/Ornament";
+import { Grain } from "@/components/ui/Grain";
 
 const ease = [0.22, 1, 0.36, 1] as const;
-
-const Ornament = () => (
-  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-    <div style={{ flex: 1, height: 1, background: "rgba(184,160,122,.25)" }} />
-    <div style={{ width: 5, height: 5, border: "1px solid rgba(184,160,122,.40)", transform: "rotate(45deg)", flexShrink: 0 }} />
-    <div style={{ flex: 1, height: 1, background: "rgba(184,160,122,.25)" }} />
-  </div>
-);
 
 interface FieldProps {
   label: string;
@@ -76,10 +66,6 @@ const StepPanel: React.FC<{ num: string; title: string; delay?: number; children
   </motion.div>
 );
 
-// ─────────────────────────────────────────────────────────────
-// CHECKOUT PAGE
-// ─────────────────────────────────────────────────────────────
-
 const PROGRESS_STEPS = ["Bag", "Details", "Payment", "Confirm"];
 
 export default function CheckoutPage() {
@@ -103,9 +89,6 @@ export default function CheckoutPage() {
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
 
         .co { --gold:#B8A07A; --gold-d:rgba(184,160,122,.25); --ink:#1A1714; --mist:#7A7269; --cream:#F2EDE5; --surface:rgba(255,255,255,.52); --rule:rgba(26,23,20,.08); font-family:'Inter',sans-serif; }
-        .co-grain { position:fixed; inset:0; pointer-events:none; z-index:0;
-          background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
-          background-repeat:repeat; }
 
         /* Input focus */
         .co-input:focus { border-color: #B8A07A !important; background: rgba(255,255,255,.72) !important; }
@@ -135,7 +118,7 @@ export default function CheckoutPage() {
       `}</style>
 
       <div className="co" style={{ background: "#F2EDE5", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-        <div className="co-grain" aria-hidden="true" />
+        <Grain />
         <Navbar />
 
         <main style={{ flex: 1, position: "relative", zIndex: 1, maxWidth: 1160, width: "100%", margin: "0 auto", padding: "clamp(6rem,12vh,8rem) 40px clamp(4rem,8vh,6rem)" }}>
@@ -158,14 +141,14 @@ export default function CheckoutPage() {
             style={{ display: "flex", alignItems: "center", marginBottom: 40 }} role="list" aria-label="Checkout steps"
           >
             {PROGRESS_STEPS.map((s, i) => (
-              <>
-                <div key={s} role="listitem" style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 400, letterSpacing: ".18em", textTransform: "uppercase",
+              <React.Fragment key={s}>
+                <div role="listitem" style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 400, letterSpacing: ".18em", textTransform: "uppercase",
                   color: i === 0 ? "#B8A07A" : i === 1 ? "#1A1714" : "rgba(26,23,20,.28)" }}>
                   <div style={{ width: 6, height: 6, borderRadius: "50%", border: `0.5px solid ${i <= 1 ? "#B8A07A" : "rgba(26,23,20,.22)"}`, background: i <= 1 ? "#B8A07A" : "transparent" }} />
                   {s}
                 </div>
-                {i < PROGRESS_STEPS.length - 1 && <div key={`line-${i}`} style={{ flex: 1, height: 1, background: "rgba(184,160,122,.22)", margin: "0 10px" }} />}
-              </>
+                {i < PROGRESS_STEPS.length - 1 && <div style={{ flex: 1, height: 1, background: "rgba(184,160,122,.22)", margin: "0 10px" }} />}
+              </React.Fragment>
             ))}
           </motion.div>
 
@@ -173,7 +156,8 @@ export default function CheckoutPage() {
             <Ornament />
           </motion.div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)", gap: 40, alignItems: "start" }}>
+          {/* Responsive Split Columns Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
 
             {/* ── Form ── */}
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 0 }}>

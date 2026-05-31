@@ -1,19 +1,29 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { COLLECTIONS } from "@/constants";
+import { collectionService } from "@/services/collection.service";
 
-export default function CollectionsPage1() {
+export const metadata: Metadata = {
+  title: "Collections | MOXY",
+  description: "Browse curated luxury collections for men, women, and kids at MOXY.",
+};
+
+export default async function CollectionsPage() {
+  const collections = await collectionService.getCollections();
+
   return (
-    <div className="min-h-screen bg-brand-bg text-brand-text font-sans">
-      <main className="pt-28 px-5 sm:px-10 pb-20 max-w-6xl mx-auto">
+    <div className="min-h-screen bg-brand-bg text-brand-text font-sans flex flex-col justify-between">
+      <Navbar />
+
+      <main className="pt-28 px-5 sm:px-10 pb-20 max-w-6xl mx-auto flex-1 w-full">
         <div className="mb-10">
           <p className="text-xs uppercase tracking-[0.24em] text-brand-accent mb-3">Collections</p>
           <h1 className="text-4xl sm:text-5xl font-light tracking-[0.01em]">Shop MOXY</h1>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          {COLLECTIONS.map((collection) => (
+          {collections.map((collection) => (
             <Link
               key={collection.slug}
               href={`/${collection.slug}`}
@@ -26,6 +36,8 @@ export default function CollectionsPage1() {
           ))}
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }

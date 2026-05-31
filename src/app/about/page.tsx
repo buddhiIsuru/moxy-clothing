@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 
 const sections = [
   {
@@ -73,368 +75,374 @@ export default function AboutPage() {
 
   return (
     <div
-      className="min-h-screen font-sans"
+      className="min-h-screen font-sans flex flex-col justify-between"
       style={{ background: "#F8F7F4", color: "#1a1916", fontFamily: "'Inter', sans-serif" }}
     >
-      {/* Hero */}
-      <section
-        className="relative"
-        style={{
-          padding: "72px 48px 64px",
-          borderBottom: "1px solid rgba(26,25,22,.08)",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 48,
-            width: 48,
-            height: 1.5,
-            background: "#b8925a",
-          }}
-        />
-        <p
-          style={{
-            fontSize: 10,
-            letterSpacing: "0.3em",
-            textTransform: "uppercase",
-            color: "#b8925a",
-            marginBottom: 20,
-            fontWeight: 500,
-          }}
-        >
-          About Us
-        </p>
-        <h1
-          style={{
-            fontSize: "clamp(48px, 10vw, 96px)",
-            fontWeight: 300,
-            letterSpacing: "-0.02em",
-            lineHeight: 1,
-            color: "#1a1916",
-          }}
-        >
-          MOXY
-        </h1>
-        <p
-          style={{
-            fontSize: 11,
-            fontWeight: 400,
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: "rgba(26,25,22,.35)",
-            marginTop: 14,
-          }}
-        >
-          Contemporary Luxury Clothing House
-        </p>
-      </section>
+      <Navbar />
 
-      {/* Sections */}
-      <div
-        className="sections-wrap"
-        style={{ padding: "0 48px" }}
-      >
-        {sections.map((s, i) => (
+      <main className="flex-1 w-full pt-16">
+        {/* Hero */}
+        <section
+          className="relative"
+          style={{
+            padding: "72px 48px 64px",
+            borderBottom: "1px solid rgba(26,25,22,.08)",
+          }}
+        >
           <div
-            key={s.number}
-            className="section-item"
             style={{
-              display: "grid",
-              gridTemplateColumns: "200px 1fr",
-              borderBottom: "1px solid rgba(26,25,22,.07)",
-              padding: "52px 0",
-              alignItems: "start",
-              animationDelay: `${0.08 + i * 0.1}s`,
+              position: "absolute",
+              bottom: 0,
+              left: 48,
+              width: 48,
+              height: 1.5,
+              background: "#b8925a",
+            }}
+          />
+          <p
+            style={{
+              fontSize: 10,
+              letterSpacing: "0.3em",
+              textTransform: "uppercase",
+              color: "#b8925a",
+              marginBottom: 20,
+              fontWeight: 500,
             }}
           >
-            <div style={{ paddingRight: 40 }}>
-              <p
-                style={{
-                  fontSize: 10,
-                  color: "rgba(26,25,22,.2)",
-                  letterSpacing: "0.2em",
-                  marginBottom: 14,
-                  fontWeight: 400,
-                  textTransform: "uppercase",
-                }}
-              >
-                {s.number}
-              </p>
-              <h2
-                style={{
-                  fontSize: "clamp(17px, 2.2vw, 24px)",
-                  fontWeight: 300,
-                  color: "#1a1916",
-                  letterSpacing: "-0.01em",
-                  lineHeight: 1.3,
-                  whiteSpace: "pre-line",
-                }}
-              >
-                {s.title}
-              </h2>
-              <div
-                style={{
-                  width: 24,
-                  height: 1.5,
-                  background: "#b8925a",
-                  margin: "22px 0",
-                }}
-              />
-            </div>
-            <p
+            About Us
+          </p>
+          <h1
+            style={{
+              fontSize: "clamp(48px, 10vw, 96px)",
+              fontWeight: 300,
+              letterSpacing: "-0.02em",
+              lineHeight: 1,
+              color: "#1a1916",
+            }}
+          >
+            MOXY
+          </h1>
+          <p
+            style={{
+              fontSize: 11,
+              fontWeight: 400,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "rgba(26,25,22,.35)",
+              marginTop: 14,
+            }}
+          >
+            Contemporary Luxury Clothing House
+          </p>
+        </section>
+
+        {/* Sections */}
+        <div
+          className="sections-wrap"
+          style={{ padding: "0 48px" }}
+        >
+          {sections.map((s, i) => (
+            <div
+              key={s.number}
+              className="section-item"
               style={{
-                fontSize: 14,
-                lineHeight: 1.95,
-                color: "rgba(26,25,22,.52)",
-                fontWeight: 300,
-                maxWidth: 520,
+                display: "grid",
+                gridTemplateColumns: "200px 1fr",
+                borderBottom: "1px solid rgba(26,25,22,.07)",
+                padding: "52px 0",
+                alignItems: "start",
+                animationDelay: `${0.08 + i * 0.1}s`,
               }}
             >
-              {s.body}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Reviews */}
-      <section
-        style={{
-          padding: "80px 48px",
-          background: "#f2f0eb",
-          borderTop: "1px solid rgba(26,25,22,.07)",
-        }}
-      >
-        <p
-          style={{
-            fontSize: 10,
-            letterSpacing: "0.3em",
-            textTransform: "uppercase",
-            color: "#b8925a",
-            marginBottom: 14,
-            fontWeight: 500,
-          }}
-        >
-          Client Voices
-        </p>
-        <h2
-          style={{
-            fontSize: "clamp(22px, 4vw, 40px)",
-            fontWeight: 300,
-            color: "#1a1916",
-            letterSpacing: "-0.02em",
-            marginBottom: 52,
-          }}
-        >
-          What our customers say
-        </h2>
-
-        {/* Slider */}
-        <div
-          style={{ overflow: "hidden" }}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-        >
-          <div
-            ref={trackRef}
-            style={{
-              display: "flex",
-              transition: "transform 0.5s cubic-bezier(.4,0,.2,1)",
-            }}
-          >
-            {reviews.map((r) => (
-              <div key={r.author} style={{ minWidth: "100%", padding: "0 2px" }}>
-                <div
+              <div style={{ paddingRight: 40 }}>
+                <p
                   style={{
-                    border: "1px solid rgba(26,25,22,.09)",
-                    padding: "44px 48px",
-                    background: "#F8F7F4",
-                    position: "relative",
+                    fontSize: 10,
+                    color: "rgba(26,25,22,.2)",
+                    letterSpacing: "0.2em",
+                    marginBottom: 14,
+                    fontWeight: 400,
+                    textTransform: "uppercase",
                   }}
                 >
-                  {/* Opening quote */}
-                  <span
+                  {s.number}
+                </p>
+                <h2
+                  style={{
+                    fontSize: "clamp(17px, 2.2vw, 24px)",
+                    fontWeight: 300,
+                    color: "#1a1916",
+                    letterSpacing: "-0.01em",
+                    lineHeight: 1.3,
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  {s.title}
+                </h2>
+                <div
+                  style={{
+                    width: 24,
+                    height: 1.5,
+                    background: "#b8925a",
+                    margin: "22px 0",
+                  }}
+                />
+              </div>
+              <p
+                style={{
+                  fontSize: 14,
+                  lineHeight: 1.95,
+                  color: "rgba(26,25,22,.52)",
+                  fontWeight: 300,
+                  maxWidth: 520,
+                }}
+              >
+                {s.body}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Reviews */}
+        <section
+          style={{
+            padding: "80px 48px",
+            background: "#f2f0eb",
+            borderTop: "1px solid rgba(26,25,22,.07)",
+          }}
+        >
+          <p
+            style={{
+              fontSize: 10,
+              letterSpacing: "0.3em",
+              textTransform: "uppercase",
+              color: "#b8925a",
+              marginBottom: 14,
+              fontWeight: 500,
+            }}
+          >
+            Client Voices
+          </p>
+          <h2
+            style={{
+              fontSize: "clamp(22px, 4vw, 40px)",
+              fontWeight: 300,
+              color: "#1a1916",
+              letterSpacing: "-0.02em",
+              marginBottom: 52,
+            }}
+          >
+            What our customers say
+          </h2>
+
+          {/* Slider */}
+          <div
+            style={{ overflow: "hidden" }}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div
+              ref={trackRef}
+              style={{
+                display: "flex",
+                transition: "transform 0.5s cubic-bezier(.4,0,.2,1)",
+              }}
+            >
+              {reviews.map((r) => (
+                <div key={r.author} style={{ minWidth: "100%", padding: "0 2px" }}>
+                  <div
                     style={{
-                      fontFamily: "Georgia, serif",
-                      fontSize: 72,
-                      color: "#b8925a",
-                      opacity: 0.25,
-                      position: "absolute",
-                      top: 16,
-                      left: 36,
-                      lineHeight: 1,
-                      pointerEvents: "none",
+                      border: "1px solid rgba(26,25,22,.09)",
+                      padding: "44px 48px",
+                      background: "#F8F7F4",
+                      position: "relative",
                     }}
                   >
-                    &ldquo;
-                  </span>
-                  <p
-                    style={{
-                      fontSize: "clamp(14px, 1.8vw, 18px)",
-                      fontWeight: 300,
-                      lineHeight: 1.85,
-                      color: "rgba(26,25,22,.65)",
-                      marginBottom: 36,
-                      paddingTop: 36,
-                      fontStyle: "italic",
-                      letterSpacing: "0.01em",
-                    }}
-                  >
-                    {r.text}
-                  </p>
-                  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                    <div
+                    {/* Opening quote */}
+                    <span
                       style={{
-                        width: 38,
-                        height: 38,
-                        borderRadius: "50%",
-                        border: "1px solid rgba(184,146,90,.4)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 10,
-                        letterSpacing: "0.1em",
+                        fontFamily: "Georgia, serif",
+                        fontSize: 72,
                         color: "#b8925a",
-                        fontWeight: 500,
-                        flexShrink: 0,
-                        background: "rgba(184,146,90,.06)",
+                        opacity: 0.25,
+                        position: "absolute",
+                        top: 16,
+                        left: 36,
+                        lineHeight: 1,
+                        pointerEvents: "none",
                       }}
                     >
-                      {r.initials}
-                    </div>
-                    <div>
-                      <div style={{ display: "flex", gap: 3, marginBottom: 5 }}>
-                        {[...Array(5)].map((_, i) => (
-                          <span key={i} style={{ color: "#b8925a", fontSize: 11 }}>★</span>
-                        ))}
-                      </div>
-                      <p style={{ fontSize: 13, fontWeight: 500, color: "#1a1916", letterSpacing: "0.02em" }}>
-                        {r.author}
-                      </p>
-                      <p
+                      &ldquo;
+                    </span>
+                    <p
+                      style={{
+                        fontSize: "clamp(14px, 1.8vw, 18px)",
+                        fontWeight: 300,
+                        lineHeight: 1.85,
+                        color: "rgba(26,25,22,.65)",
+                        marginBottom: 36,
+                        paddingTop: 36,
+                        fontStyle: "italic",
+                        letterSpacing: "0.01em",
+                      }}
+                    >
+                      {r.text}
+                    </p>
+                    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                      <div
                         style={{
-                          fontSize: 11,
-                          color: "rgba(26,25,22,.3)",
+                          width: 38,
+                          height: 38,
+                          borderRadius: "50%",
+                          border: "1px solid rgba(184,146,90,.4)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 10,
                           letterSpacing: "0.1em",
-                          textTransform: "uppercase",
-                          marginTop: 3,
+                          color: "#b8925a",
+                          fontWeight: 500,
+                          flexShrink: 0,
+                          background: "rgba(184,146,90,.06)",
                         }}
                       >
-                        {r.detail}
-                      </p>
+                        {r.initials}
+                      </div>
+                      <div>
+                        <div style={{ display: "flex", gap: 3, marginBottom: 5 }}>
+                          {[...Array(5)].map((_, i) => (
+                            <span key={i} style={{ color: "#b8925a", fontSize: 11 }}>★</span>
+                          ))}
+                        </div>
+                        <p style={{ fontSize: 13, fontWeight: 500, color: "#1a1916", letterSpacing: "0.02em" }}>
+                          {r.author}
+                        </p>
+                        <p
+                          style={{
+                            fontSize: 11,
+                            color: "rgba(26,25,22,.3)",
+                            letterSpacing: "0.1em",
+                            textTransform: "uppercase",
+                            marginTop: 3,
+                          }}
+                        >
+                          {r.detail}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Controls */}
-        <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 32, flexWrap: "wrap" }}>
-          <button
-            onClick={() => go(current - 1)}
-            aria-label="Previous"
-            style={{
-              width: 38,
-              height: 38,
-              border: "1px solid rgba(26,25,22,.15)",
-              background: "transparent",
-              color: "rgba(26,25,22,.45)",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 15,
-              fontFamily: "inherit",
-              transition: "all .25s",
-            }}
-          >
-            ←
-          </button>
-          <button
-            onClick={() => go(current + 1)}
-            aria-label="Next"
-            style={{
-              width: 38,
-              height: 38,
-              border: "1px solid rgba(26,25,22,.15)",
-              background: "transparent",
-              color: "rgba(26,25,22,.45)",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 15,
-              fontFamily: "inherit",
-              transition: "all .25s",
-            }}
-          >
-            →
-          </button>
-          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-            {reviews.map((_, i) => (
-              <div
-                key={i}
-                onClick={() => go(i)}
-                style={{
-                  height: 1.5,
-                  width: i === current ? 32 : 18,
-                  background: i === current ? "#b8925a" : "rgba(26,25,22,.15)",
-                  cursor: "pointer",
-                  transition: "all .3s",
-                }}
-              />
-            ))}
+          {/* Controls */}
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 32, flexWrap: "wrap" }}>
+            <button
+              onClick={() => go(current - 1)}
+              aria-label="Previous"
+              style={{
+                width: 38,
+                height: 38,
+                border: "1px solid rgba(26,25,22,.15)",
+                background: "transparent",
+                color: "rgba(26,25,22,.45)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 15,
+                fontFamily: "inherit",
+                transition: "all .25s",
+              }}
+            >
+              ←
+            </button>
+            <button
+              onClick={() => go(current + 1)}
+              aria-label="Next"
+              style={{
+                width: 38,
+                height: 38,
+                border: "1px solid rgba(26,25,22,.15)",
+                background: "transparent",
+                color: "rgba(26,25,22,.45)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 15,
+                fontFamily: "inherit",
+                transition: "all .25s",
+              }}
+            >
+              →
+            </button>
+            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+              {reviews.map((_, i) => (
+                <div
+                  key={i}
+                  onClick={() => go(i)}
+                  style={{
+                    height: 1.5,
+                    width: i === current ? 32 : 18,
+                    background: i === current ? "#b8925a" : "rgba(26,25,22,.15)",
+                    cursor: "pointer",
+                    transition: "all .3s",
+                  }}
+                />
+              ))}
+            </div>
+            <span
+              style={{
+                fontSize: 11,
+                color: "rgba(26,25,22,.25)",
+                letterSpacing: "0.15em",
+                marginLeft: "auto",
+              }}
+            >
+              {current + 1} / {reviews.length}
+            </span>
           </div>
+        </section>
+
+        {/* Footer Strip */}
+        <div
+          style={{
+            padding: "28px 48px",
+            borderTop: "1px solid rgba(26,25,22,.07)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 12,
+          }}
+        >
           <span
             style={{
-              fontSize: 11,
+              fontSize: 10,
+              letterSpacing: "0.35em",
+              textTransform: "uppercase",
               color: "rgba(26,25,22,.25)",
-              letterSpacing: "0.15em",
-              marginLeft: "auto",
+              fontWeight: 400,
             }}
           >
-            {current + 1} / {reviews.length}
+            MOXY
+          </span>
+          <span
+            style={{
+              fontSize: 10,
+              letterSpacing: "0.15em",
+              textTransform: "uppercase",
+              color: "rgba(184,146,90,.5)",
+            }}
+          >
+            Refined · Enduring · Considered
           </span>
         </div>
-      </section>
+      </main>
 
-      {/* Footer Strip */}
-      <div
-        style={{
-          padding: "28px 48px",
-          borderTop: "1px solid rgba(26,25,22,.07)",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 12,
-        }}
-      >
-        <span
-          style={{
-            fontSize: 10,
-            letterSpacing: "0.35em",
-            textTransform: "uppercase",
-            color: "rgba(26,25,22,.25)",
-            fontWeight: 400,
-          }}
-        >
-          MOXY
-        </span>
-        <span
-          style={{
-            fontSize: 10,
-            letterSpacing: "0.15em",
-            textTransform: "uppercase",
-            color: "rgba(184,146,90,.5)",
-          }}
-        >
-          Refined · Enduring · Considered
-        </span>
-      </div>
+      <Footer />
 
       {/* Responsive styles */}
       <style>{`

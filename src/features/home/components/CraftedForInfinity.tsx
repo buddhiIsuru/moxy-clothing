@@ -1,9 +1,9 @@
 "use client";
 
-// Design A — Dark Prestige
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FadeIn, Stagger, StaggerItem } from "@/components/ui/Animate";
-import { BRAND_POLICIES } from "@/constants";
+import { serviceService } from "@/services/service.service";
+import { BrandPolicy } from "@/types";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -20,6 +20,12 @@ const STATS = [
 ];
 
 export const CraftedForInfinity: React.FC = () => {
+  const [policies, setPolicies] = useState<BrandPolicy[]>([]);
+
+  useEffect(() => {
+    serviceService.getBrandPolicies().then(setPolicies).catch(console.error);
+  }, []);
+
   return (
     <section
       style={{
@@ -135,82 +141,84 @@ export const CraftedForInfinity: React.FC = () => {
         </FadeIn>
 
         {/* ── Policies grid ── */}
-        <Stagger staggerChildren={0.12} className="w-full">
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0 }}>
-            {BRAND_POLICIES.map((policy, i) => (
-              <StaggerItem key={policy.title}>
-                <div
-                  style={{
-                    padding: `32px ${i < 2 ? "36px" : "0"} 32px ${i > 0 ? "36px" : "0"}`,
-                    borderRight: i < 2 ? "0.5px solid rgba(184,149,106,0.1)" : "none",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 0,
-                  }}
-                >
-                  <span
+        {policies.length > 0 && (
+          <Stagger staggerChildren={0.12} className="w-full">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0 }}>
+              {policies.map((policy, i) => (
+                <StaggerItem key={policy.title}>
+                  <div
                     style={{
-                      fontFamily: INTER,
-                      fontSize: 10,
-                      fontWeight: 200,
-                      letterSpacing: "0.42em",
-                      color: "rgba(184,149,106,0.5)",
-                      marginBottom: 16,
-                    }}
-                  >
-                    0{i + 1}
-                  </span>
-
-                  <p
-                    style={{
-                      fontFamily: INTER,
-                      fontSize: 22,
-                      fontWeight: 400,
-                      color: IVORY,
-                      lineHeight: 1.15,
-                      marginBottom: 14,
-                    }}
-                  >
-                    {policy.title}
-                  </p>
-
-                  <p
-                    style={{
-                      fontFamily: INTER,
-                      fontSize: 12,
-                      fontWeight: 200,
-                      lineHeight: 1.95,
-                      color: "rgba(247,244,239,0.38)",
-                      flex: 1,
-                      marginBottom: 20,
-                    }}
-                  >
-                    {policy.description}
-                  </p>
-
-                  <Link
-                    href="/about"
-                    style={{
-                      fontFamily: INTER,
-                      fontSize: 10,
-                      fontWeight: 300,
-                      letterSpacing: "0.3em",
-                      textTransform: "uppercase",
-                      color: GOLD,
+                      padding: `32px ${i < 2 ? "36px" : "0"} 32px ${i > 0 ? "36px" : "0"}`,
+                      borderRight: i < 2 ? "0.5px solid rgba(184,149,106,0.1)" : "none",
                       display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      textDecoration: "none",
+                      flexDirection: "column",
+                      gap: 0,
                     }}
                   >
-                    Learn more
-                    <ArrowRight size={13} strokeWidth={1.3} />
-                  </Link>
-                </div>
-              </StaggerItem>
-            ))}
-          </div>
-        </Stagger>
+                    <span
+                      style={{
+                        fontFamily: INTER,
+                        fontSize: 10,
+                        fontWeight: 200,
+                        letterSpacing: "0.42em",
+                        color: "rgba(184,149,106,0.5)",
+                        marginBottom: 16,
+                      }}
+                    >
+                      0{i + 1}
+                    </span>
+
+                    <p
+                      style={{
+                        fontFamily: INTER,
+                        fontSize: 22,
+                        fontWeight: 400,
+                        color: IVORY,
+                        lineHeight: 1.15,
+                        marginBottom: 14,
+                      }}
+                    >
+                      {policy.title}
+                    </p>
+
+                    <p
+                      style={{
+                        fontFamily: INTER,
+                        fontSize: 12,
+                        fontWeight: 200,
+                        lineHeight: 1.95,
+                        color: "rgba(247,244,239,0.38)",
+                        flex: 1,
+                        marginBottom: 20,
+                      }}
+                    >
+                      {policy.description}
+                    </p>
+
+                    <Link
+                      href="/about"
+                      style={{
+                        fontFamily: INTER,
+                        fontSize: 10,
+                        fontWeight: 300,
+                        letterSpacing: "0.3em",
+                        textTransform: "uppercase",
+                        color: GOLD,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        textDecoration: "none",
+                      }}
+                    >
+                      Learn more
+                      <ArrowRight size={13} strokeWidth={1.3} />
+                    </Link>
+                  </div>
+                </StaggerItem>
+              ))}
+            </div>
+          </Stagger>
+        )}
       </div>
     </section>
   );

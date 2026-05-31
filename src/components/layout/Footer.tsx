@@ -1,10 +1,15 @@
 "use client";
+
 import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { navigationService, FooterSection } from "@/services/navigation.service";
+import logoImage from "@/assets/logo/LOGO (2).png";
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   const [visible, setVisible] = useState(false);
+  const [sections, setSections] = useState<FooterSection[]>([]);
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -13,44 +18,16 @@ export const Footer: React.FC = () => {
       { threshold: 0.08 }
     );
     if (ref.current) observer.observe(ref.current);
+
+    // Fetch links asynchronously from the service layer
+    navigationService.getFooterSections().then(setSections).catch(console.error);
+
     return () => observer.disconnect();
   }, []);
-
-  const sections = [
-    {
-      title: "Brand",
-      links: [
-        { label: "The Story", href: "#story" },
-        { label: "Our Philosophy", href: "#philosophy" },
-        { label: "Journal", href: "#journal" },
-        { label: "Careers", href: "#careers" },
-      ],
-    },
-    {
-      title: "Customer Care",
-      links: [
-        { label: "Shipping & Delivery", href: "#shipping" },
-        { label: "Returns & Exchanges", href: "#returns" },
-        { label: "Garment Care", href: "#care" },
-        { label: "Sizing Concierge", href: "#size-guide" },
-      ],
-    },
-    {
-      title: "Socials",
-      links: [
-        { label: "Instagram", href: "https://instagram.com" },
-        { label: "Pinterest", href: "https://pinterest.com" },
-        { label: "YouTube", href: "https://youtube.com" },
-        { label: "TikTok", href: "https://tiktok.com" },
-      ],
-    },
-  ];
 
   return (
     <>
       <style>{`
-        
-
         .moxy-footer {
           --gold: #B8A07A;
           --gold-dim: #9C8760;
@@ -83,16 +60,6 @@ export const Footer: React.FC = () => {
         .moxy-footer__inner.is-visible > *:nth-child(2) { opacity:1; transform:none; transition-delay:0.15s; }
         .moxy-footer__inner.is-visible > *:nth-child(3) { opacity:1; transform:none; transition-delay:0.25s; }
         .moxy-footer__inner.is-visible > *:nth-child(4) { opacity:1; transform:none; transition-delay:0.35s; }
-
-        .moxy-footer__wordmark {
-          font-family: 'Inter', sans-serif;
-          font-weight: 300;
-          font-size: clamp(3.5rem, 8vw, 6.5rem);
-          letter-spacing: 0.55em;
-          color: var(--ink);
-          line-height: 1;
-          text-indent: 0.55em; /* optical offset for letter-spacing */
-        }
 
         .moxy-footer__tagline {
           font-family: 'Inter', sans-serif;
@@ -233,7 +200,17 @@ export const Footer: React.FC = () => {
 
             {/* Wordmark block */}
             <div style={{ marginBottom: "4rem" }}>
-              <p className="moxy-footer__wordmark">MOXY</p>
+              <Image
+                src={logoImage}
+                alt="Moxy Logo"
+                height={48}
+                style={{
+                  height: "48px",
+                  width: "auto",
+                  objectFit: "contain",
+                  marginBottom: "1rem",
+                }}
+              />
               <p className="moxy-footer__tagline">Constructed to endure. Preserved for life.</p>
             </div>
 

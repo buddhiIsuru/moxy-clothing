@@ -1,5 +1,5 @@
 import { notFound, redirect } from "next/navigation";
-import { COLLECTIONS } from "@/constants";
+import { collectionService } from "@/services/collection.service";
 
 interface CollectionRouteProps {
   params: Promise<{ slug: string }>;
@@ -7,7 +7,7 @@ interface CollectionRouteProps {
 
 export default async function CollectionRoutePage({ params }: CollectionRouteProps) {
   const { slug } = await params;
-  const collection = COLLECTIONS.find((item) => item.slug === slug);
+  const collection = await collectionService.getCollectionBySlug(slug);
 
   if (!collection) notFound();
 

@@ -7,57 +7,11 @@ import { motion, useScroll, useTransform, useInView } from "framer-motion";
 
 import { Product } from "@/types";
 import { ProductCard } from "@/components/shared/ProductCard";
-
-// ─────────────────────────────────────────────────────────────
-// DESIGN TOKENS
-// ─────────────────────────────────────────────────────────────
+import { Ornament } from "@/components/ui/Ornament";
+import { Corner } from "@/components/ui/Corner";
+import { Grain } from "@/components/ui/Grain";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-
-const GRAIN_URL =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E\")";
-
-// ─────────────────────────────────────────────────────────────
-// SHARED ATOMS
-// ─────────────────────────────────────────────────────────────
-
-const Ornament: React.FC<{ style?: React.CSSProperties }> = ({ style }) => (
-  <div
-    aria-hidden="true"
-    style={{ display: "flex", alignItems: "center", gap: 10, ...style }}
-  >
-    <div style={{ flex: 1, height: 1, background: "rgba(184,160,122,.30)" }} />
-    <div style={{ width: 6, height: 6, border: "1px solid rgba(184,160,122,.55)", transform: "rotate(45deg)", flexShrink: 0 }} />
-    <div style={{ flex: 1, height: 1, background: "rgba(184,160,122,.30)" }} />
-  </div>
-);
-
-const Corner: React.FC<{ pos: "tl" | "tr" | "bl" | "br" }> = ({ pos }) => (
-  <div
-    aria-hidden="true"
-    style={{
-      position: "absolute", zIndex: 10, width: 18, height: 18,
-      top:    pos[0] === "t" ? 18 : "auto",
-      bottom: pos[0] === "b" ? 18 : "auto",
-      left:   pos[1] === "l" ? 18 : "auto",
-      right:  pos[1] === "r" ? 18 : "auto",
-      borderTop:    pos[0] === "t" ? "1px solid rgba(184,160,122,.60)" : "none",
-      borderBottom: pos[0] === "b" ? "1px solid rgba(184,160,122,.60)" : "none",
-      borderLeft:   pos[1] === "l" ? "1px solid rgba(184,160,122,.60)" : "none",
-      borderRight:  pos[1] === "r" ? "1px solid rgba(184,160,122,.60)" : "none",
-    }}
-  />
-);
-
-const Grain: React.FC = () => (
-  <div
-    aria-hidden="true"
-    style={{
-      position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none",
-      backgroundImage: GRAIN_URL, backgroundRepeat: "repeat",
-    }}
-  />
-);
 
 // ─────────────────────────────────────────────────────────────
 // FEATURE BANNER
@@ -104,6 +58,7 @@ export const FeatureBanner: React.FC<FeatureBannerProps> = ({
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
         }}
+        className="grid-cols-1 md:grid-cols-2"
       >
         {/* ── Image panel ── */}
         <div
@@ -442,6 +397,7 @@ export const ProductRow: React.FC<ProductRowProps> = ({ subtitle, title, product
             paddingBottom: 4,
             cursor: "grab",
           }}
+          className="scrollbar-hide"
           onMouseDown={handleMouseDown}
         >
           {products.map((product, i) => (

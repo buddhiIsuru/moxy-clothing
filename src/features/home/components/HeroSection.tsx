@@ -5,28 +5,20 @@ import Image from "next/image";
 import type { StaticImageData } from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-
-import { HERO_SLIDES } from "@/constants";
-
-// ─────────────────────────────────────────────────────────────
-// TYPES
-// ─────────────────────────────────────────────────────────────
+import { navigationService } from "@/services/navigation.service";
+import { Ornament } from "@/components/ui/Ornament";
 
 interface HeroSlide {
   imageUrl: string | StaticImageData;
   eyebrow?: string;
   title: string;
-  titleItalic?: string;   // renders as italic subtitle beneath title
+  titleItalic?: string;
   description: string;
   ctaLabel?: string;
   ctaHref?: string;
   secondaryLabel?: string;
   secondaryHref?: string;
 }
-
-// ─────────────────────────────────────────────────────────────
-// CONSTANTS
-// ─────────────────────────────────────────────────────────────
 
 const AUTOPLAY_MS = 6000;
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -37,33 +29,17 @@ const fadeUp = (delay = 0, fromY = 20) => ({
               transition: { delay, duration: 1.0, ease } },
 });
 
-// ─────────────────────────────────────────────────────────────
-// ORNAMENT
-// ─────────────────────────────────────────────────────────────
-
-const Ornament: React.FC = () => (
-  <div style={{ display: "flex", alignItems: "center", gap: 12, maxWidth: 280, margin: "26px 0" }}>
-    <div style={{ flex: 1, height: 1, background: "rgba(184,160,122,.32)" }} />
-    <div style={{ width: 5, height: 5, border: "1px solid rgba(184,160,122,.55)", transform: "rotate(45deg)", flexShrink: 0 }} />
-    <div style={{ flex: 1, height: 1, background: "rgba(184,160,122,.32)" }} />
-  </div>
-);
-
-// ─────────────────────────────────────────────────────────────
-// HERO SECTION
-// ─────────────────────────────────────────────────────────────
-
 export const HeroSection: React.FC = () => {
-  const [active, setActive]       = useState(0);
-  const [progress, setProgress]   = useState(0);
-  const timerRef                  = useRef<ReturnType<typeof setInterval> | null>(null);
-  const progressRef               = useRef<ReturnType<typeof setInterval> | null>(null);
-  const slides                    = HERO_SLIDES as HeroSlide[];
+  const [slides, setSlides] = useState<HeroSlide[]>([]);
+  const [active, setActive] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const progressRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startProgress = useCallback(() => {
     if (progressRef.current) clearInterval(progressRef.current);
     setProgress(0);
-    const tick = 50; // ms
+    const tick = 50;
     let elapsed = 0;
     progressRef.current = setInterval(() => {
       elapsed += tick;
@@ -72,6 +48,7 @@ export const HeroSection: React.FC = () => {
   }, []);
 
   const goTo = useCallback((n: number) => {
+    if (slides.length === 0) return;
     const next = (n + slides.length) % slides.length;
     setActive(next);
     startProgress();
@@ -83,19 +60,34 @@ export const HeroSection: React.FC = () => {
   }, [active, goTo]);
 
   useEffect(() => {
-    resetAutoplay();
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [resetAutoplay]);
+    // Fetch slides from navigationService
+    navigationService.getHeroSlides()
+      .then((data) => {
+        setSlides(data);
+        startProgress();
+      })
+      .catch(console.error);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (progressRef.current) clearInterval(progressRef.current);
+    };
+  }, [startProgress]);
 
   useEffect(() => {
-    const tick = 50;
-    let elapsed = 0;
-    progressRef.current = setInterval(() => {
-      elapsed += tick;
-      setProgress(Math.min((elapsed / AUTOPLAY_MS) * 100, 100));
-    }, tick);
-    return () => { if (progressRef.current) clearInterval(progressRef.current); };
-  }, []);
+    if (slides.length > 0) {
+      resetAutoplay();
+    }
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [slides, resetAutoplay]);
+
+  if (slides.length === 0) {
+    return (
+      <div style={{ height: "screen", background: "#0C0A09" }} className="w-full h-screen flex items-center justify-center">
+        <div className="w-10 h-10 border border-white/20 border-t-white rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   const slide = slides[active];
   const padded = (n: number) => String(n + 1).padStart(2, "0");
@@ -111,7 +103,6 @@ export const HeroSection: React.FC = () => {
           font-family: 'Inter', sans-serif;
         }
 
-        /* ── Slide images ── */
         .hs-img-wrap {
           position: absolute; inset: -6%; z-index: 0;
           transition: transform 9s cubic-bezier(.22,1,.36,1);
@@ -119,7 +110,6 @@ export const HeroSection: React.FC = () => {
         }
         .hs-img-wrap.zoomed { transform: scale(1.06); }
 
-        /* ── Frame border ── */
         .hs-frame {
           position: absolute; inset: 20px; z-index: 8;
           border: 0.5px solid rgba(255,255,255,.09);
@@ -133,7 +123,6 @@ export const HeroSection: React.FC = () => {
         .hs-corner-bl { bottom:-1px;left:-1px; border-bottom:1px solid var(--gold);border-left:1px solid var(--gold) }
         .hs-corner-br { bottom:-1px;right:-1px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold) }
 
-        /* ── Side label ── */
         .hs-side-label {
           position: absolute; left: 32px; bottom: 52px; z-index: 20;
           writing-mode: vertical-rl; transform: rotate(180deg);
@@ -142,7 +131,6 @@ export const HeroSection: React.FC = () => {
           color: rgba(255,255,255,.28);
         }
 
-        /* ── Slide counter ── */
         .hs-counter {
           position: absolute; right: 36px; top: 50%; transform: translateY(-50%);
           z-index: 20; display: flex; flex-direction: column; align-items: center; gap: 10px;
@@ -157,7 +145,6 @@ export const HeroSection: React.FC = () => {
           color: rgba(255,255,255,.28); line-height: 1;
         }
 
-        /* ── Eyebrow ── */
         .hs-eyebrow {
           display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
         }
@@ -168,7 +155,6 @@ export const HeroSection: React.FC = () => {
           color: rgba(255,255,255,.5);
         }
 
-        /* ── Title ── */
         .hs-title {
           font-family: 'Inter', sans-serif; font-weight: 200;
           font-size: clamp(3rem, 7vw, 5.5rem);
@@ -182,14 +168,12 @@ export const HeroSection: React.FC = () => {
           letter-spacing: .01em; margin-top: 4px;
         }
 
-        /* ── Description ── */
         .hs-desc {
           font-family: 'Inter', sans-serif; font-weight: 300;
           font-size: 13.5px; line-height: 1.85;
           color: rgba(255,255,255,.48); max-width: 360px;
         }
 
-        /* ── Primary CTA ── */
         .hs-btn-primary {
           position: relative; overflow: hidden;
           font-family: 'Inter', sans-serif;
@@ -209,7 +193,6 @@ export const HeroSection: React.FC = () => {
         .hs-btn-primary:hover::before { transform: scaleX(1); }
         .hs-btn-primary > * { position: relative; z-index: 1; }
 
-        /* Shimmer sweep */
         .hs-shimmer {
           position: absolute; top: 0; left: -80%; width: 48%; height: 100%;
           background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
@@ -221,7 +204,6 @@ export const HeroSection: React.FC = () => {
           100% { left: 160%; }
         }
 
-        /* ── Ghost CTA ── */
         .hs-btn-ghost {
           font-family: 'Inter', sans-serif;
           font-size: 9.5px; font-weight: 400; letter-spacing: .3em; text-transform: uppercase;
@@ -232,7 +214,6 @@ export const HeroSection: React.FC = () => {
         }
         .hs-btn-ghost:hover { color: rgba(255,255,255,.9); border-color: rgba(184,160,122,.55); }
 
-        /* ── Nav controls ── */
         .hs-ctrl-btn {
           width: 44px; height: 44px;
           display: flex; align-items: center; justify-content: center;
@@ -246,7 +227,6 @@ export const HeroSection: React.FC = () => {
           border-color: rgba(184,160,122,.45);
         }
 
-        /* ── Dot indicators ── */
         .hs-dot {
           height: 1.5px; background: rgba(255,255,255,.22);
           cursor: pointer; border: none;
@@ -254,7 +234,6 @@ export const HeroSection: React.FC = () => {
         }
         .hs-dot.active { background: rgba(184,160,122,.88); }
 
-        /* ── Progress bar ── */
         .hs-progress-fill {
           height: 100%;
           background: linear-gradient(to right, #B8A07A, rgba(184,160,122,.35));
@@ -357,7 +336,7 @@ export const HeroSection: React.FC = () => {
 
               {/* Ornament */}
               <motion.div {...fadeUp(0.32)}>
-                <Ornament />
+                <Ornament style={{ maxWidth: 280, margin: "26px 0" }} />
               </motion.div>
 
               {/* Description */}

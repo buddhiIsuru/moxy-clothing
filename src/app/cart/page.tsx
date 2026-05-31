@@ -7,10 +7,8 @@ import { Navbar }  from "@/components/layout/Navbar";
 import { Footer }  from "@/components/layout/Footer";
 import { useCart } from "@/context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
-
-// ─────────────────────────────────────────────────────────────
-// TOKENS
-// ─────────────────────────────────────────────────────────────
+import { Ornament } from "@/components/ui/Ornament";
+import { Grain } from "@/components/ui/Grain";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -19,22 +17,6 @@ const fadeUp = (delay = 0) => ({
   animate:  { opacity: 1, y: 0,  filter: "blur(0px)",
               transition: { delay, duration: 0.85, ease } },
 });
-
-// ─────────────────────────────────────────────────────────────
-// ATOMS
-// ─────────────────────────────────────────────────────────────
-
-const Ornament = () => (
-  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-    <div style={{ flex: 1, height: 1, background: "rgba(184,160,122,.28)" }} />
-    <div style={{ width: 5, height: 5, border: "1px solid rgba(184,160,122,.45)", transform: "rotate(45deg)", flexShrink: 0 }} />
-    <div style={{ flex: 1, height: 1, background: "rgba(184,160,122,.28)" }} />
-  </div>
-);
-
-// ─────────────────────────────────────────────────────────────
-// MAIN PAGE
-// ─────────────────────────────────────────────────────────────
 
 export default function CartPage() {
   const { cartItems, cartSubtotal, updateQuantity, removeFromCart } = useCart();
@@ -53,12 +35,6 @@ export default function CartPage() {
           --surface: rgba(255,255,255,.52);
           --rule:    rgba(26,23,20,.08);
           font-family: 'Inter', sans-serif;
-        }
-
-        .cp-grain {
-          position: fixed; inset: 0; pointer-events: none; z-index: 0;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
-          background-repeat: repeat;
         }
 
         /* ── ITEM ROW ── */
@@ -165,7 +141,7 @@ export default function CartPage() {
       `}</style>
 
       <div className="cp" style={{ background: "#F2EDE5", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-        <div className="cp-grain" aria-hidden="true" />
+        <Grain />
         <Navbar />
 
         <main style={{ flex: 1, position: "relative", zIndex: 1, maxWidth: 1200, width: "100%", margin: "0 auto", padding: "clamp(6rem, 12vh, 8rem) 40px clamp(4rem, 8vh, 6rem)" }}>
@@ -209,7 +185,7 @@ export default function CartPage() {
               </Link>
             </motion.div>
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 40, alignItems: "start" }}>
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-10 items-start">
 
               {/* ── Cart items ── */}
               <div role="list" aria-label="Cart items">

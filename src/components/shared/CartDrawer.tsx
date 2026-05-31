@@ -1,12 +1,12 @@
 "use client";
 
-
 import React, { useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { X, Plus, Minus, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/CartContext";
+import logoImage from "@/assets/logo/LOGO (2).png";
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 const IVORY   = "#f7f4ef";
@@ -16,7 +16,6 @@ const INK2    = "rgba(14,13,11,0.55)";
 const INK3    = "rgba(14,13,11,0.32)";
 const INK4    = "rgba(14,13,11,0.1)";
 const GOLD    = "#b8956a";
-const GOLD2   = "#d4b48a";
 const INTER   = "'Inter', sans-serif";
 
 export const CartDrawer: React.FC = () => {
@@ -90,19 +89,18 @@ export const CartDrawer: React.FC = () => {
                 flexShrink: 0,
               }}
             >
-              <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                <span
+              <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                <Image
+                  src={logoImage}
+                  alt="Moxy Logo"
+                  height={18}
                   style={{
-                    fontFamily: INTER,
-                    fontSize: 9,
-                    fontWeight: 200,
-                    letterSpacing: "0.5em",
-                    textTransform: "uppercase",
-                    color: GOLD,
+                    height: "18px",
+                    width: "auto",
+                    objectFit: "contain",
+                    alignSelf: "flex-start",
                   }}
-                >
-                  Moxy
-                </span>
+                />
                 <span
                   style={{
                     fontFamily: INTER,

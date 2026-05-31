@@ -5,13 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { Heart, ShoppingBag } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { COLLECTIONS } from "@/constants";
 import { useCart } from "@/context/CartContext";
 import { Collection, Product } from "@/types";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { Grain } from "@/components/ui/Grain";
 
-type Section = "womens" | "mens" | "kids";
 type SortOption = "featured" | "newest" | "price-asc" | "price-desc";
 
 const SECTION_LINKS = [
@@ -87,10 +86,9 @@ const CollectionProductCard: React.FC<{ product: Product }> = ({ product }) => {
   );
 };
 
-export function CollectionPage({ initialSection }: { initialSection: Section }) {
+export function CollectionPage({ collection }: { collection: Collection }) {
   const [activeCategory, setActiveCategory] = useState("All");
   const [sortBy, setSortBy] = useState<SortOption>("featured");
-  const collection = COLLECTIONS.find((item) => item.slug === initialSection) as Collection;
   const categories = collection.categories ?? ["All"];
 
   let filtered = [...collection.products];
@@ -128,6 +126,7 @@ export function CollectionPage({ initialSection }: { initialSection: Section }) 
           flex-direction: column;
           align-items: center;
           gap: 12px;
+          position: relative;
         }
 
         .collection-eyebrow,
@@ -148,6 +147,8 @@ export function CollectionPage({ initialSection }: { initialSection: Section }) 
           font-weight: 300;
           letter-spacing: .34em;
           color: var(--gold);
+          position: relative;
+          z-index: 2;
         }
 
         .collection-hero h1 {
@@ -156,6 +157,8 @@ export function CollectionPage({ initialSection }: { initialSection: Section }) 
           letter-spacing: .03em;
           color: var(--ivory);
           line-height: 1.08;
+          position: relative;
+          z-index: 2;
         }
 
         .collection-hero p {
@@ -164,6 +167,8 @@ export function CollectionPage({ initialSection }: { initialSection: Section }) 
           font-size: 13px;
           font-weight: 300;
           line-height: 1.8;
+          position: relative;
+          z-index: 2;
         }
 
         .collection-section-links {
@@ -190,7 +195,7 @@ export function CollectionPage({ initialSection }: { initialSection: Section }) 
           border-color: var(--ink);
         }
 
-        .collection-body { padding: 30px 40px 72px; }
+        .collection-body { padding: 30px 40px 72px; position: relative; }
 
         .collection-slider {
           display: flex;
@@ -365,13 +370,14 @@ export function CollectionPage({ initialSection }: { initialSection: Section }) 
 
       <main className="collection-main">
         <section className="collection-hero">
+          <Grain style={{ opacity: 0.15 }} />
           <span className="collection-eyebrow">{collection.eyebrow}</span>
           <h1>{collection.title} Collection</h1>
           <p>{collection.description}</p>
         </section>
 
-
         <section className="collection-body">
+          <Grain />
           <div className="collection-slider" aria-label={`${collection.title} subcategories`}>
             {categories.map((category) => (
               <button

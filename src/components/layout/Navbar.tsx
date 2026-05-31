@@ -2,17 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Search, User, ShoppingBag, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/CartContext";
 import { CartDrawer } from "../shared/CartDrawer";
-
-const NAV_LINKS = [
-  { label: "Men", href: "/mens" },
-  { label: "Women", href: "/womens" },
-  { label: "Kids", href: "/kids" },
-  { label: "About", href: "/about" },
-];
+import logoImage from "@/assets/logo/black (1).png";
+import { navigationService } from "@/services/navigation.service";
+import { NavLink } from "@/types";
 
 const SUB_LINKS = ["New Season", "Ready to Wear", "Accessories", "Bespoke", "Archive"];
 
@@ -22,12 +19,17 @@ export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSub, setActiveSub] = useState("New Season");
+  const [navLinks, setNavLinks] = useState<NavLink[]>([]);
 
   const { cartCount, setIsCartOpen } = useCart();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 24);
     window.addEventListener("scroll", handleScroll);
+    
+    // Fetch links asynchronously from the service layer
+    navigationService.getNavLinks().then(setNavLinks).catch(console.error);
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -67,15 +69,15 @@ export const Navbar: React.FC = () => {
             }}
             className="hidden lg:flex"
           >
-            {NAV_LINKS.map((link) => (
+            {navLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
                 style={{
                   position: "relative",
                   fontFamily: INTER,
-                  fontSize: 11,
-                  fontWeight: 300,
+                  fontSize: 12,
+                  fontWeight: 600,
                   letterSpacing: "0.28em",
                   textTransform: "uppercase" as const,
                   color: "rgba(14,13,11,0.55)",
@@ -100,39 +102,23 @@ export const Navbar: React.FC = () => {
             href="/"
             style={{
               display: "flex",
-              flexDirection: "column",
               alignItems: "center",
-              gap: 4,
+              justifyContent: "center",
               textDecoration: "none",
+              height: "44px",
             }}
           >
-            <span
+            <Image
+              src={logoImage}
+              alt="Moxy Logo"
+              height={32}
               style={{
-                fontFamily: INTER,
-                fontWeight: 300,
-                fontSize: 24,
-                letterSpacing: "0.38em",
-                color: "#0e0d0b",
-                textTransform: "uppercase",
-                lineHeight: 1,
-                paddingLeft: "0.38em",
+                height: "32px",
+                width: "auto",
+                objectFit: "contain",
               }}
-            >
-              Moxy
-            </span>
-            <span
-              style={{
-                fontFamily: INTER,
-                fontWeight: 200,
-                fontSize: 8,
-                letterSpacing: "0.5em",
-                color: "#b8956a",
-                textTransform: "uppercase",
-                paddingLeft: "0.5em",
-              }}
-            >
-              Luxury Fashion House
-            </span>
+              priority
+            />
           </Link>
 
           {/* Right icons — desktop */}
@@ -159,12 +145,12 @@ export const Navbar: React.FC = () => {
               <User size={15} strokeWidth={1.3} />
             </Link>
 
-            <div style={{ width: "0.5px", height: 14, background: "rgba(14,13,11,0.14)" }} />
+            <div style={{ width: "0.5px", height: 14, background: "rgb(0, 0, 0)" }} />
 
             <button
               aria-label="Cart"
               onClick={() => setIsCartOpen(true)}
-              style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(14,13,11,0.4)", fontSize: 15, display: "flex", alignItems: "center", padding: 0, position: "relative" }}
+              style={{ background: "none", border: "none", cursor: "pointer", color: "rgb(0, 0, 0)", fontSize: 16, display: "flex", alignItems: "center", padding: 0, position: "relative" }}
               className="hover:text-[#0e0d0b] transition-colors duration-300"
             >
               <ShoppingBag size={15} strokeWidth={1.3} />
@@ -179,7 +165,7 @@ export const Navbar: React.FC = () => {
                     borderRadius: "50%",
                     background: "#0e0d0b",
                     color: "#f7f4ef",
-                    fontSize: 8,
+                    fontSize: 14,
                     fontWeight: 300,
                     display: "flex",
                     alignItems: "center",
@@ -259,13 +245,17 @@ export const Navbar: React.FC = () => {
                 borderBottom: "0.5px solid rgba(14,13,11,0.1)",
               }}
             >
-              <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                <span style={{ fontFamily: INTER, fontWeight: 300, fontSize: 20, letterSpacing: "0.35em", color: "#0e0d0b", textTransform: "uppercase", lineHeight: 1 }}>
-                  Moxy
-                </span>
-                <span style={{ fontFamily: INTER, fontWeight: 200, fontSize: 7, letterSpacing: "0.5em", color: "#b8956a", textTransform: "uppercase" }}>
-                  Luxury Fashion House
-                </span>
+              <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
+                <Image
+                  src={logoImage}
+                  alt="Moxy Logo"
+                  height={24}
+                  style={{
+                    height: "24px",
+                    width: "auto",
+                    objectFit: "contain",
+                  }}
+                />
               </div>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -278,7 +268,7 @@ export const Navbar: React.FC = () => {
 
             {/* Links */}
             <div style={{ borderBottom: "0.5px solid rgba(14,13,11,0.08)" }}>
-              {NAV_LINKS.map((link, idx) => (
+              {navLinks.map((link, idx) => (
                 <motion.div
                   key={link.label}
                   initial={{ opacity: 0, y: 16 }}
