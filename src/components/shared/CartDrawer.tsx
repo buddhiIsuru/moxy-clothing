@@ -6,7 +6,7 @@ import Link from "next/link";
 import { X, Plus, Minus, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/CartContext";
-import logoImage from "@/assets/logo/LOGO (2).png";
+import logoImage from "@/assets/logo/black (1).png";
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 const IVORY   = "#f7f4ef";

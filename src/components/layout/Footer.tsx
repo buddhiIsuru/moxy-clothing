@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { navigationService, FooterSection } from "@/services/navigation.service";
-import logoImage from "@/assets/logo/LOGO (2).png";
+import logoImage from "@/assets/logo/black (1).png";
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -199,19 +199,18 @@ export const Footer: React.FC = () => {
           <div className={`moxy-footer__inner${visible ? " is-visible" : ""}`}>
 
             {/* Wordmark block */}
-            <div style={{ marginBottom: "4rem" }}>
+            <div style={{ marginBottom: "4rem",textAlign: "center" }}>
               <Image
                 src={logoImage}
                 alt="Moxy Logo"
-                height={48}
+                // height={200}
                 style={{
-                  height: "48px",
+                  height: "200px",
                   width: "auto",
                   objectFit: "contain",
                   marginBottom: "1rem",
                 }}
               />
-              <p className="moxy-footer__tagline">Constructed to endure. Preserved for life.</p>
             </div>
 
             {/* Ornamental rule */}
