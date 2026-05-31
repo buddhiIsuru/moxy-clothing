@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --background: #F8F7F4;
+  --foreground: #1A1A1A;
+}
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-serif: "Inter", sans-serif;
+  
+  --color-brand-bg: #F8F7F4;
+  --color-brand-text: #1A1A1A;
+  --color-brand-muted: #8C8C8C;
+  --color-brand-accent: #C8A97E;
+  --color-brand-cta: #111111;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: #F8F7F4;
+  color: #1A1A1A;
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Minimal Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F8F7F4;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E5E3DF;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C8A97E;
+}
+
+/* Luxury Glow Effects (adjusted for light theme) */
+.glow-glow {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+}
+
+.text-glow {
+  text-shadow: 0 0 20px rgba(200, 169, 126, 0.15);
+}
+
+/* hide scrollbar (luxury clean slider) */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
