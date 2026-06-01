@@ -68,7 +68,7 @@ export const HERO_SLIDES = [
 
 export const ESSENTIAL_OUTERWEAR = {
   category: "CLASSIC",
-  title: "Womens Collection",
+  title: "Essential Outerwear",
   description: "A definitive collection of tailored overcoats, sculptural blazers, and weather-resistant capes. Engineered with high-shoulder silhouettes and premium double-faced Italian cashmere.",
   imageUrl: timeless1,
   hoverImageUrl: timeless2,
@@ -78,7 +78,7 @@ export const ESSENTIAL_OUTERWEAR = {
 
 export const THE_UNIFORM = {
   category: "THE EDIT",
-  title: "Mens Collection",
+  title: "The Uniform",
   description: "Modern formalwear redefined for the contemporary vanguard. Sculpted slim-fit charcoal tailoring constructed from high-twist merino wool, designed for seamless transitions from day to night.",
   imageUrl: banner2,
   hoverImageUrl: banner1,
@@ -88,7 +88,7 @@ export const THE_UNIFORM = {
 
 export const PETITE_LUXURY = {
   category: "KIDS",
-  title: "Kids Collection",
+  title: "Petite Luxury",
   description: "Sophisticated minimalism scaled down. Responsibly sourced organic cotton, baby alpaca wool, and soft linen in raw neutral palettes designed for active play and enduring elegance.",
   imageUrl: banner1,
   hoverImageUrl: banner2,
