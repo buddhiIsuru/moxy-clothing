@@ -78,22 +78,18 @@ export default function LoginPage() {
       <main
         style={{
           flex: 1,
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          marginTop: 64, // navbar height offset — adjust to match your Navbar
+          marginTop: 64, // navbar height offset
         }}
+        className="grid grid-cols-1 md:grid-cols-2"
       >
 
         {/* ── LEFT PANEL — brand editorial ── */}
         <div
           style={{
             background: INK,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "72px 56px",
+            padding: "clamp(2.5rem, 6vw, 4.5rem) clamp(1.25rem, 5vw, 3.5rem)",
           }}
+          className="hidden md:flex flex-col items-center justify-center"
         >
           {/* Top ornament */}
           <div style={{ width: "0.5px", height: 48, background: "rgba(184,149,106,0.4)", marginBottom: 28 }} />
@@ -124,8 +120,7 @@ export default function LoginPage() {
               marginBottom: 8,
             }}
           >
-            Welcome to{" "}
-            <em style={{ fontStyle: "italic", color: GOLD2 }}>Moxy</em>
+            Welcome
           </h2>
 
           <p
@@ -175,7 +170,7 @@ export default function LoginPage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: "72px 56px",
+            padding: "clamp(2.5rem, 8vw, 4.5rem) clamp(1.25rem, 5vw, 3.5rem)",
             background: IVORY,
           }}
         >
@@ -227,7 +222,7 @@ export default function LoginPage() {
                 marginBottom: 32,
               }}
             >
-              Access your Moxy wardrobe
+              Access your wardrobe
             </p>
 
             {/* Gold rule */}
@@ -392,7 +387,7 @@ export default function LoginPage() {
                   color: INK3,
                 }}
               >
-                New to Moxy?{" "}
+                New here?{" "}
               </span>
               <Link
                 href="/register"

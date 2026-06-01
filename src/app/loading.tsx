@@ -246,15 +246,15 @@ export const Loading: React.FC<LoadingPageProps> = ({
                   <Image
                     src={logo}
                     alt="MOXY"
-                    width={180}
-                    height={60}
+                    width={250}
+                    height={80}
                     style={{ objectFit: "contain", filter: "invert(1) brightness(1)", width: "100%", height: "auto" }}
                     priority
                   />
                 </div>
 
                 {/* Fallback / supplementary wordmark */}
-                <h1 className="ld-wordmark" aria-hidden="true">MOXY</h1>
+                {/* <h1 className="ld-wordmark" aria-hidden="true">MOXY</h1> */}
 
                 {/* Ornament */}
                 <motion.div

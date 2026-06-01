@@ -7,6 +7,7 @@ import { Product } from "@/types";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart } from "lucide-react";
+import { useCart } from "@/context/CartContext";
 
 interface ProductCardProps {
   product: Product;
@@ -23,6 +24,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   className,
   offerLabel,
 }) => {
+  const { formatPrice } = useCart();
   const [isHovered, setIsHovered] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -84,6 +86,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         }
         .pc-wish:hover  { background: rgba(243,238,230,0.96); border-color: var(--gold); }
         .pc-wish.active { background: var(--cream); border-color: var(--gold); }
+
+        @media (max-width: 1024px) {
+          .pc-wish {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
 
         /* ── Labels ─────────────────────────────────────── */
         .pc-label {
@@ -340,11 +349,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <div className={cn("pc-price-row", isSoldOut && "pc-price--soldout")}>
               {discountPercent && product.originalPrice ? (
                 <>
-                  <span className="pc-price pc-price-sale">${product.price.toLocaleString()}</span>
-                  <span className="pc-price-original">${product.originalPrice.toLocaleString()}</span>
+                  <span className="pc-price pc-price-sale">{formatPrice(product.price)}</span>
+                  <span className="pc-price-original">{formatPrice(product.originalPrice)}</span>
                 </>
               ) : (
-                <span className="pc-price">${product.price.toLocaleString()}</span>
+                <span className="pc-price">{formatPrice(product.price)}</span>
               )}
             </div>
           </div>

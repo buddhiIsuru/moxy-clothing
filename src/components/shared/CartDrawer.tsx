@@ -26,6 +26,7 @@ export const CartDrawer: React.FC = () => {
     setIsCartOpen,
     updateQuantity,
     removeFromCart,
+    formatPrice,
   } = useCart();
 
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -77,17 +78,39 @@ export const CartDrawer: React.FC = () => {
               flexDirection: "column",
             }}
           >
+            <style>{`
+              .cd-header {
+                padding: 24px 32px 20px;
+              }
+              .cd-items {
+                padding: 4px 32px 0;
+              }
+              .cd-footer {
+                padding: 20px 32px 28px;
+              }
+              @media (max-width: 480px) {
+                .cd-header {
+                  padding: 20px 16px 16px !important;
+                }
+                .cd-items {
+                  padding: 4px 16px 0 !important;
+                }
+                .cd-footer {
+                  padding: 16px 16px 20px !important;
+                }
+              }
+            `}</style>
 
             {/* ── Header ── */}
             <div
               style={{
-                padding: "24px 32px 20px",
                 borderBottom: `0.5px solid ${INK4}`,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
                 flexShrink: 0,
               }}
+              className="cd-header"
             >
               <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                 <Image
@@ -151,8 +174,8 @@ export const CartDrawer: React.FC = () => {
               style={{
                 flex: 1,
                 overflowY: "auto",
-                padding: "4px 32px 0",
               }}
+              className="cd-items"
             >
               {cartItems.length === 0 ? (
                 /* Empty state */
@@ -384,7 +407,7 @@ export const CartDrawer: React.FC = () => {
                             color: INK,
                           }}
                         >
-                          LKR {(item.product.price * item.quantity).toLocaleString()}
+                          {formatPrice(item.product.price * item.quantity)}
                         </span>
                       </div>
                     </div>
@@ -417,10 +440,10 @@ export const CartDrawer: React.FC = () => {
               <div
                 style={{
                   borderTop: `0.5px solid ${INK4}`,
-                  padding: "20px 32px 28px",
                   background: IVORY,
                   flexShrink: 0,
                 }}
+                className="cd-footer"
               >
                 {/* Gold accent rule */}
                 <div
@@ -470,7 +493,7 @@ export const CartDrawer: React.FC = () => {
                         letterSpacing: "0.02em",
                       }}
                     >
-                      LKR {cartSubtotal.toLocaleString()}
+                      {formatPrice(cartSubtotal)}
                     </span>
                   </div>
 

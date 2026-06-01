@@ -37,22 +37,31 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom Minimal Scrollbar */
+/* Premium Luxury Floating Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F8F7F4;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #E5E3DF;
-  border-radius: 3px;
+  background: rgba(200, 169, 126, 0.35); /* Subtle premium gold accent */
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #C8A97E;
+  background: rgba(200, 169, 126, 0.8); /* Richer premium gold on hover */
+}
+
+/* Firefox Scrollbar styling */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(200, 169, 126, 0.35) transparent;
 }
 
 /* Luxury Glow Effects (adjusted for light theme) */

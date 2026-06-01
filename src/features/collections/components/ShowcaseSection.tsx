@@ -51,23 +51,33 @@ export const FeatureBanner: React.FC<FeatureBannerProps> = ({
     >
       <Grain />
 
+      <style>{`
+        .fb-hairline-${id || "default"} {
+          transform-origin: center;
+        }
+        @media (min-width: 768px) {
+          .fb-hairline-${id || "default"} {
+            transform-origin: ${reverse ? "right" : "left"};
+          }
+        }
+      `}</style>
+
       <div
         style={{
           position: "relative",
           zIndex: 2,
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
         }}
-        className="grid-cols-1 md:grid-cols-2"
+        className="grid grid-cols-1 md:grid-cols-2"
       >
         {/* ── Image panel ── */}
         <div
           style={{
             position: "relative",
             overflow: "hidden",
-            minHeight: "clamp(480px, 62vh, 720px)",
+            minHeight: "clamp(420px, 62vh, 720px)",
             order: reverse ? 2 : 1,
           }}
+          className="hidden md:block"
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
@@ -113,11 +123,10 @@ export const FeatureBanner: React.FC<FeatureBannerProps> = ({
             order: reverse ? 1 : 2,
             display: "flex",
             flexDirection: "column",
-            alignItems,
             justifyContent: "center",
-            textAlign,
-            padding: "clamp(3rem, 6vw, 5.5rem) clamp(2rem, 5vw, 5rem)",
+            padding: "clamp(2.5rem, 6vw, 5.5rem) clamp(1.25rem, 5vw, 5rem)",
           }}
+          className={reverse ? "items-center md:items-end text-center md:text-right" : "items-center md:items-start text-center md:text-left"}
         >
           {/* Hairline rule */}
           <motion.div
@@ -125,10 +134,10 @@ export const FeatureBanner: React.FC<FeatureBannerProps> = ({
             whileInView={{ scaleX: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.1, ease: EASE }}
+            className={`fb-hairline-${id || "default"}`}
             style={{
               width: 48, height: 1, background: "rgba(184,160,122,.55)",
               marginBottom: 36,
-              transformOrigin: reverse ? "right" : "left",
             }}
           />
 
@@ -141,7 +150,7 @@ export const FeatureBanner: React.FC<FeatureBannerProps> = ({
             style={{
               fontFamily: "'Inter', sans-serif",
               fontWeight: 200,
-              fontSize: "clamp(2.8rem, 5.5vw, 4.8rem)",
+              fontSize: "clamp(2.4rem, 5.5vw, 4.8rem)",
               letterSpacing: "-.02em",
               lineHeight: 1.0,
               color: "#1A1714",

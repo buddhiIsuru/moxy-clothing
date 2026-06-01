@@ -25,7 +25,7 @@ function fmtPrice(n: number) {
 
 const CollectionProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const [wished, setWished] = useState(false);
-  const { addToCart, setIsCartOpen } = useCart();
+  const { addToCart, setIsCartOpen, formatPrice } = useCart();
   const productHref = `/product/${product.slug ?? product.id}`;
 
   const handleAdd = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -73,8 +73,8 @@ const CollectionProductCard: React.FC<{ product: Product }> = ({ product }) => {
         <p className="collection-name">{product.name}</p>
         <p className="collection-category">{product.category}</p>
         <div className="collection-price-row">
-          <span>{fmtPrice(product.price)}</span>
-          {product.originalPrice && <del>{fmtPrice(product.originalPrice)}</del>}
+          <span>{formatPrice(product.price)}</span>
+          {product.originalPrice && <del>{formatPrice(product.originalPrice)}</del>}
         </div>
         <div className="collection-swatches">
           {(product.colors ?? ["#c8b89a", "#1a1a1a"]).map((color) => (
@@ -204,6 +204,12 @@ export function CollectionPage({ collection }: { collection: Collection }) {
           padding: 0 0 16px;
           margin-bottom: 16px;
           scroll-snap-type: x proximity;
+          -ms-overflow-style: none; /* IE and Edge */
+          scrollbar-width: none; /* Firefox */
+        }
+
+        .collection-slider::-webkit-scrollbar {
+          display: none; /* Chrome, Safari and Opera */
         }
 
         .collection-slider button {
@@ -324,6 +330,17 @@ export function CollectionPage({ collection }: { collection: Collection }) {
         }
 
         .collection-card:hover .collection-quick { opacity: 1; }
+
+        @media (max-width: 1024px) {
+          .collection-quick {
+            opacity: 1;
+            background: transparent;
+            pointer-events: auto;
+          }
+          .collection-quick button {
+            box-shadow: 0 4px 12px rgba(14,13,11,0.12);
+          }
+        }
 
         .collection-quick button {
           display: inline-flex;

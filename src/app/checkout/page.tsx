@@ -70,8 +70,9 @@ const PROGRESS_STEPS = ["Bag", "Details", "Payment", "Confirm"];
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cartSubtotal, cartItems, triggerToast } = useCart();
+  const { cartSubtotal, cartItems, triggerToast, formatPrice, setCurrencyByCountry } = useCart();
   const [delivery, setDelivery] = useState<"express" | "pickup">("express");
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "paypal">("card");
 
   useEffect(() => {
     const loggedIn = localStorage.getItem("moxy_auth") === "true";
@@ -119,17 +120,16 @@ export default function CheckoutPage() {
 
       <div className="co" style={{ background: "#F2EDE5", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <Grain />
-        <Navbar />
-
-        <main style={{ flex: 1, position: "relative", zIndex: 1, maxWidth: 1160, width: "100%", margin: "0 auto", padding: "clamp(6rem,12vh,8rem) 40px clamp(4rem,8vh,6rem)" }}>
+        <Navbar />        <main style={{ flex: 1, position: "relative", zIndex: 1, maxWidth: 1160, width: "100%", margin: "0 auto", padding: "clamp(5rem, 12vh, 8rem) clamp(1.25rem, 5vw, 2.5rem) clamp(4rem, 8vh, 6rem)" }}>
 
           {/* ── Header ── */}
           <motion.div initial={{ opacity: 0, y: 22, filter: "blur(5px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)", transition: { delay: 0.05, duration: 0.85, ease } }}
-            style={{ marginBottom: 36 }}
+            style={{ marginBottom: 36, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 10 }}>
               <div style={{ width: 24, height: 1, background: "#B8A07A" }} />
               <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 500, letterSpacing: ".30em", textTransform: "uppercase", color: "#B8A07A" }}>Secure Checkout</p>
+              <div style={{ width: 24, height: 1, background: "#B8A07A" }} />
             </div>
             <h1 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 200, fontSize: "clamp(2.6rem,5vw,3.8rem)", letterSpacing: "-.015em", lineHeight: 1, color: "#1A1714" }}>
               Complete Your Order
@@ -138,7 +138,7 @@ export default function CheckoutPage() {
 
           {/* ── Progress steps ── */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.08, duration: 0.7 } }}
-            style={{ display: "flex", alignItems: "center", marginBottom: 40 }} role="list" aria-label="Checkout steps"
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px 16px", marginBottom: 40 }} role="list" aria-label="Checkout steps"
           >
             {PROGRESS_STEPS.map((s, i) => (
               <React.Fragment key={s}>
@@ -147,7 +147,7 @@ export default function CheckoutPage() {
                   <div style={{ width: 6, height: 6, borderRadius: "50%", border: `0.5px solid ${i <= 1 ? "#B8A07A" : "rgba(26,23,20,.22)"}`, background: i <= 1 ? "#B8A07A" : "transparent" }} />
                   {s}
                 </div>
-                {i < PROGRESS_STEPS.length - 1 && <div style={{ flex: 1, height: 1, background: "rgba(184,160,122,.22)", margin: "0 10px" }} />}
+                {i < PROGRESS_STEPS.length - 1 && <div className="hidden sm:block" style={{ flex: 1, height: 1, background: "rgba(184,160,122,.22)", margin: "0 10px" }} />}
               </React.Fragment>
             ))}
           </motion.div>
@@ -160,18 +160,18 @@ export default function CheckoutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
 
             {/* ── Form ── */}
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 0 }} className="order-2 lg:order-1">
 
               {/* 01 Customer */}
               <StepPanel num="01" title="Customer Details" delay={0.12}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Field label="Full Name">
                     <input required placeholder="Alexandre Laurent" className="co-input" style={inputStyle} />
                   </Field>
                   <Field label="Email Address">
                     <input required type="email" placeholder="a.laurent@email.com" className="co-input" style={inputStyle} />
                   </Field>
-                  <div style={{ gridColumn: "span 2" }}>
+                  <div className="sm:col-span-2">
                     <Field label="Contact Number">
                       <input required type="tel" placeholder="+1 (000) 000-0000" className="co-input" style={inputStyle} />
                     </Field>
@@ -181,15 +181,22 @@ export default function CheckoutPage() {
 
               {/* 02 Address */}
               <StepPanel num="02" title="Delivery Address" delay={0.18}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Field label="Country">
-                    <select required className="co-input" style={inputStyle} defaultValue="">
+                    <select
+                      required
+                      className="co-input"
+                      style={inputStyle}
+                      defaultValue=""
+                      onChange={(e) => setCurrencyByCountry(e.target.value)}
+                    >
                       <option value="" disabled>Select country</option>
-                      <option>Sri Lanka</option>
-                      <option>United States</option>
-                      <option>United Kingdom</option>
-                      <option>France</option>
-                      <option>Japan</option>
+                      <option value="Sri Lanka">Sri Lanka</option>
+                      <option value="United States">United States</option>
+                      <option value="United Kingdom">United Kingdom</option>
+                      <option value="Spain">Spain</option>
+                      <option value="France">France</option>
+                      <option value="Japan">Japan</option>
                     </select>
                   </Field>
                   <Field label="Region / State">
@@ -202,12 +209,12 @@ export default function CheckoutPage() {
                       <option>Île-de-France</option>
                     </select>
                   </Field>
-                  <div style={{ gridColumn: "span 2" }}>
+                  <div className="sm:col-span-2">
                     <Field label="Address Line 1">
                       <input required placeholder="Street address" className="co-input" style={inputStyle} />
                     </Field>
                   </div>
-                  <div style={{ gridColumn: "span 2" }}>
+                  <div className="sm:col-span-2">
                     <Field label="Address Line 2" optional>
                       <input placeholder="Apartment, suite, floor…" className="co-input" style={inputStyle} />
                     </Field>
@@ -223,7 +230,7 @@ export default function CheckoutPage() {
 
               {/* 03 Method */}
               <StepPanel num="03" title="Delivery Method" delay={0.24}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {[
                     { key: "express", label: "Express Delivery", sub: "Complimentary · 1–3 days" },
                     { key: "pickup",  label: "Atelier Pickup",   sub: "Ready within 24 hours" },
@@ -259,29 +266,102 @@ export default function CheckoutPage() {
 
               {/* 04 Payment */}
               <StepPanel num="04" title="Payment" delay={0.30}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                  <div style={{ gridColumn: "span 2" }}>
-                    <Field label="Cardholder Name">
-                      <input required placeholder="Name as on card" className="co-input" style={inputStyle} />
-                    </Field>
-                  </div>
-                  <div style={{ gridColumn: "span 2" }}>
-                    <Field label="Card Number">
-                      <input required placeholder="0000  0000  0000  0000" className="co-input" style={{ ...inputStyle, letterSpacing: ".06em" }} />
-                    </Field>
-                  </div>
-                  <Field label="Expiry (MM / YY)">
-                    <input required placeholder="MM / YY" className="co-input" style={inputStyle} />
-                  </Field>
-                  <Field label="CVC">
-                    <input required placeholder="•••" className="co-input" style={inputStyle} />
-                  </Field>
+                {/* Payment Tabs Selector */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5" role="tablist" style={{ marginBottom: 28 }}>
+                  {/* Card Tab */}
+                  <label
+                    className={`co-method ${paymentMethod === "card" ? "active" : ""}`}
+                    onClick={() => setPaymentMethod("card")}
+                    role="tab"
+                    aria-selected={paymentMethod === "card"}
+                    style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 14 }}
+                  >
+                    <div className="co-method-radio" />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 400, letterSpacing: ".08em", color: "#1A1714" }}>
+                          Credit Card
+                        </span>
+                        <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                          {/* Visa */}
+                          <svg width="24" height="15" viewBox="0 0 24 15" style={{ background: "#FFFFFF", padding: "1px 3px", borderRadius: 1, border: "0.5px solid rgba(26,23,20,.08)" }}>
+                            <path d="M0 10.2L1.8 1h2.9l-1.8 9.2H2.9zm6-8.7c-.4-.4-1-.5-1.6-.5H.3v.4c.9.2 1.7.5 2.3.9.4.2.5.4.4.8L1.6 10.2h3.1L9 1.5H6zm3 8.7L11.8 1.5h2.9L12 10.2H9zm9.4-4.8c-.1-1.6-1.5-2.2-2.8-2.2-1.7 0-2.8.9-2.8 2.1 0 1 .9 1.5 1.6 1.8.7.3 1 .6 1 .9s-.8.9-1.5.9c-.8 0-1.4-.2-1.9-.5l-.3 1.4c.5.2 1.3.4 2.2.4 1.8 0 2.9-.9 2.9-2.2 0-.9-.6-1.5-1.8-1.9-.7-.3-.9-.6-.9-.9 0-.4.5-.7 1.2-.7.7 0 1.2.2 1.5.3l.3-1.5z" fill="#0E4595" />
+                          </svg>
+                          {/* Mastercard */}
+                          <svg width="24" height="15" viewBox="0 0 24 15" style={{ background: "#FFFFFF", padding: "1px 3px", borderRadius: 1, border: "0.5px solid rgba(26,23,20,.08)" }}>
+                            <circle cx="8" cy="7.5" r="4.5" fill="#EB001B" />
+                            <circle cx="16" cy="7.5" r="4.5" fill="#F79E1B" opacity="0.85" />
+                          </svg>
+                        </div>
+                      </div>
+                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 9.5, fontWeight: 300, color: "#7A7269", marginTop: 2 }}>
+                        Visa &amp; Mastercard
+                      </p>
+                    </div>
+                  </label>
+
+                  {/* PayPal Tab */}
+                  <label
+                    className={`co-method ${paymentMethod === "paypal" ? "active" : ""}`}
+                    onClick={() => setPaymentMethod("paypal")}
+                    role="tab"
+                    aria-selected={paymentMethod === "paypal"}
+                    style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 14 }}
+                  >
+                    <div className="co-method-radio" />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 400, letterSpacing: ".08em", color: "#1A1714" }}>
+                          PayPal
+                        </span>
+                        {/* PayPal logo */}
+                        <svg width="24" height="15" viewBox="0 0 24 18" style={{ background: "#FFFFFF", padding: "1px 3px", borderRadius: 1, border: "0.5px solid rgba(26,23,20,.08)" }}>
+                          <path d="M18.5 2.5C18.5 1.1 17.1 0 15.5 0H5.5c-.5 0-1 .4-1.1.9L2 14.3c-.1.5.3.9.8.9h3.7l1.1-7.1c.1-.5.5-.9 1-.9h2.2c2.8 0 5-1.5 5.7-4.7z" fill="#003087" />
+                          <path d="M15.5 6.5c-.7 3.2-2.9 4.7-5.7 4.7H7.6c-.5 0-.9.4-1 1L5.5 19.3c-.1.5.3.9.8.9h3.7c.5 0 1-.4 1.1-.9l1.1-7.1c.1-.5.5-.9 1-.9h.6c2.8 0 5-1.5 5.7-4.7C20.5 7.8 18.5 6.5 15.5 6.5z" fill="#0079C1" opacity="0.85" />
+                        </svg>
+                      </div>
+                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 9.5, fontWeight: 300, color: "#7A7269", marginTop: 2 }}>
+                        PayPal Account
+                      </p>
+                    </div>
+                  </label>
                 </div>
+
+                {paymentMethod === "card" ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="sm:col-span-2">
+                      <Field label="Cardholder Name">
+                        <input required placeholder="Name as on card" className="co-input" style={inputStyle} />
+                      </Field>
+                    </div>
+                    <div className="sm:col-span-2">
+                      <Field label="Card Number">
+                        <input required placeholder="0000  0000  0000  0000" className="co-input" style={{ ...inputStyle, letterSpacing: ".06em" }} />
+                      </Field>
+                    </div>
+                    <Field label="Expiry (MM / YY)">
+                      <input required placeholder="MM / YY" className="co-input" style={inputStyle} />
+                    </Field>
+                    <Field label="CVC">
+                      <input required placeholder="•••" className="co-input" style={inputStyle} />
+                    </Field>
+                  </div>
+                ) : (
+                  <div style={{ padding: "28px 20px", border: "0.5px solid rgba(26,23,20,.08)", background: "rgba(255,255,255,.35)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 12.5, fontWeight: 300, color: "#7A7269", lineHeight: 1.6, textAlign: "center", marginBottom: 16 }}>
+                      You will be redirected to PayPal to complete your purchase securely.
+                    </p>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#FFFFFF", padding: "8px 16px", borderRadius: 4, border: "0.5px solid rgba(26,23,20,.08)" }}>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 700, color: "#003087", fontStyle: "italic", letterSpacing: "-0.04em" }}>Pay</span>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 700, color: "#0079C1", fontStyle: "italic", letterSpacing: "-0.04em" }}>Pal</span>
+                    </div>
+                  </div>
+                )}
 
                 <button type="submit" className="co-pay">
                   <div className="co-pay-inner">
                     <Lock size={12} strokeWidth={1.5} />
-                    Confirm &amp; Pay — ${cartSubtotal.toLocaleString()}
+                    {paymentMethod === "card" ? `Confirm & Pay — ${formatPrice(cartSubtotal)}` : `Redirect to PayPal — ${formatPrice(cartSubtotal)}`}
                   </div>
                   <div className="co-pay-shimmer" aria-hidden="true" />
                 </button>
@@ -298,6 +378,7 @@ export default function CheckoutPage() {
               initial={{ opacity: 0, y: 22, filter: "blur(5px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)", transition: { delay: 0.15, duration: 0.85, ease } }}
               style={{ background: "rgba(255,255,255,.52)", border: "0.5px solid rgba(26,23,20,.08)", backdropFilter: "blur(8px)", padding: 28, position: "sticky", top: 32 }}
+              className="order-1 lg:order-2"
               aria-label="Order summary"
             >
               <h2 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: "1.4rem", letterSpacing: "-.01em", color: "#1A1714", marginBottom: 24 }}>
@@ -320,7 +401,7 @@ export default function CheckoutPage() {
                       </p>
                     </div>
                     <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: ".95rem", color: "#7A7269", flexShrink: 0, paddingTop: 2 }}>
-                      ${(item.product.price * item.quantity).toLocaleString()}
+                      {formatPrice(item.product.price * item.quantity)}
                     </p>
                   </div>
                 ))}
@@ -329,7 +410,7 @@ export default function CheckoutPage() {
               <hr style={{ border: "none", borderTop: "0.5px solid rgba(26,23,20,.08)", margin: "16px 0" }} />
 
               {[
-                { label: "Subtotal",       value: `$${cartSubtotal.toLocaleString()}`, gold: false },
+                { label: "Subtotal",       value: formatPrice(cartSubtotal), gold: false },
                 { label: "Delivery",       value: "Complimentary", gold: true },
                 { label: "Duties & taxes", value: "Included",      gold: true },
               ].map(({ label, value, gold }) => (
@@ -344,7 +425,7 @@ export default function CheckoutPage() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                 <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 500, letterSpacing: ".22em", textTransform: "uppercase", color: "#7A7269" }}>Total</span>
                 <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: "1.9rem", letterSpacing: "-.01em", color: "#1A1714" }}>
-                  ${cartSubtotal.toLocaleString()}
+                  {formatPrice(cartSubtotal)}
                 </span>
               </div>
             </motion.aside>

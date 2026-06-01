@@ -31,27 +31,168 @@ export const CraftedForInfinity: React.FC = () => {
       style={{
         width: "100%",
         background: INK,
-        padding: "96px 48px",
+        padding: "clamp(3.5rem, 10vw, 6rem) clamp(1.25rem, 5vw, 3rem)",
         borderTop: "0.5px solid rgba(14,13,11,0.06)",
       }}
     >
+      <style>{`
+        .cfi-split {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 32px;
+          padding-bottom: 36px;
+          border-bottom: 0.5px solid rgba(184,149,106,0.15);
+          margin-bottom: 36px;
+        }
+        .cfi-left {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 0;
+        }
+        .cfi-right {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 24px;
+        }
+        .cfi-eyebrow {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 14px;
+        }
+        .cfi-eyebrow-line {
+          display: none !important;
+        }
+        .cfi-stats-container {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+          width: 100%;
+          padding-top: 24px;
+          border-top: 0.5px solid rgba(184,149,106,0.15);
+        }
+        .cfi-stat-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          padding: 12px 6px;
+          background: rgba(255,255,255,0.02);
+          border: 0.5px solid rgba(184,149,106,0.09);
+          border-radius: 4px;
+        }
+        .cfi-stat-num {
+          font-family: 'Inter', sans-serif;
+          font-size: 24px;
+          font-weight: 300;
+          color: #d4b48a;
+          line-height: 1.1;
+        }
+        .cfi-stat-label {
+          font-family: 'Inter', sans-serif;
+          font-size: 8px;
+          font-weight: 200;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: rgba(247,244,239,0.35);
+          margin-top: 4px;
+          line-height: 1.3;
+        }
+        .cfi-policies {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 0;
+        }
+        .cfi-policy-card {
+          padding: 28px 0;
+          border-bottom: 0.5px solid rgba(184,149,106,0.1);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 0;
+        }
+        .cfi-policy-card:last-child {
+          border-bottom: none;
+        }
+        @media (min-width: 768px) {
+          .cfi-split {
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            padding-bottom: 56px;
+            margin-bottom: 56px;
+          }
+          .cfi-left {
+            align-items: flex-start;
+            text-align: left;
+          }
+          .cfi-right {
+            align-items: flex-start;
+            text-align: left;
+            gap: 20px;
+          }
+          .cfi-eyebrow {
+            justify-content: flex-start;
+          }
+          .cfi-eyebrow-line {
+            display: block !important;
+          }
+          .cfi-stats-container {
+            display: flex;
+            gap: 32px;
+            padding-top: 20px;
+            background: transparent;
+            border: none;
+            border-top: 0.5px solid rgba(184,149,106,0.15);
+          }
+          .cfi-stat-item {
+            padding: 0;
+            background: transparent;
+            border: none;
+            align-items: flex-start;
+            text-align: left;
+            justify-content: flex-start;
+          }
+          .cfi-stat-num {
+            font-size: 28px;
+          }
+          .cfi-stat-label {
+            font-size: 9px;
+            letter-spacing: 0.38em;
+            margin-top: 0;
+          }
+          .cfi-policies {
+            grid-template-columns: repeat(3, 1fr);
+          }
+          .cfi-policy-card {
+            padding: 32px 36px;
+            border-bottom: none;
+            border-right: 0.5px solid rgba(184,149,106,0.1);
+            align-items: flex-start;
+            text-align: left;
+          }
+          .cfi-policy-card:first-child {
+            padding-left: 0;
+          }
+          .cfi-policy-card:last-child {
+            padding-right: 0;
+            border-right: none;
+          }
+        }
+      `}</style>
+
       <div style={{ maxWidth: 960, margin: "0 auto" }}>
 
         {/* ── Top: editorial split ── */}
         <FadeIn direction="up" delay={0.1}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 64,
-              alignItems: "end",
-              paddingBottom: 56,
-              borderBottom: "0.5px solid rgba(184,149,106,0.15)",
-              marginBottom: 56,
-            }}
-          >
+          <div className="cfi-split">
             {/* Left — heading */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+            <div className="cfi-left">
               <span
                 style={{
                   fontFamily: INTER,
@@ -61,19 +202,17 @@ export const CraftedForInfinity: React.FC = () => {
                   textTransform: "uppercase",
                   color: GOLD,
                   marginBottom: 20,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 14,
                 }}
+                className="cfi-eyebrow"
               >
-                <span style={{ display: "block", width: 28, height: "0.5px", background: GOLD }} />
+                <span className="cfi-eyebrow-line" style={{ display: "block", width: 28, height: "0.5px", background: GOLD }} />
                 The Moxy Standard
               </span>
 
               <h2
                 style={{
                   fontFamily: INTER,
-                  fontSize: "clamp(44px, 5vw, 58px)",
+                  fontSize: "clamp(36px, 5vw, 58px)",
                   fontWeight: 300,
                   lineHeight: 0.92,
                   letterSpacing: "0.01em",
@@ -87,7 +226,7 @@ export const CraftedForInfinity: React.FC = () => {
             </div>
 
             {/* Right — body + stats */}
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end", gap: 20 }}>
+            <div className="cfi-right">
               <p
                 style={{
                   fontFamily: INTER,
@@ -101,36 +240,13 @@ export const CraftedForInfinity: React.FC = () => {
               </p>
 
               {/* Stats */}
-              <div
-                style={{
-                  display: "flex",
-                  gap: 32,
-                  paddingTop: 20,
-                  borderTop: "0.5px solid rgba(184,149,106,0.15)",
-                }}
-              >
+              <div className="cfi-stats-container">
                 {STATS.map((s) => (
-                  <div key={s.label} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                    <span
-                      style={{
-                        fontFamily: INTER,
-                        fontSize: 28,
-                        fontWeight: 300,
-                        color: GOLD2,
-                      }}
-                    >
+                  <div key={s.label} className="cfi-stat-item">
+                    <span className="cfi-stat-num">
                       {s.num}
                     </span>
-                    <span
-                      style={{
-                        fontFamily: INTER,
-                        fontSize: 9,
-                        fontWeight: 200,
-                        letterSpacing: "0.38em",
-                        textTransform: "uppercase",
-                        color: "rgba(247,244,239,0.28)",
-                      }}
-                    >
+                    <span className="cfi-stat-label">
                       {s.label}
                     </span>
                   </div>
@@ -143,18 +259,10 @@ export const CraftedForInfinity: React.FC = () => {
         {/* ── Policies grid ── */}
         {policies.length > 0 && (
           <Stagger staggerChildren={0.12} className="w-full">
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0 }}>
+            <div className="cfi-policies">
               {policies.map((policy, i) => (
                 <StaggerItem key={policy.title}>
-                  <div
-                    style={{
-                      padding: `32px ${i < 2 ? "36px" : "0"} 32px ${i > 0 ? "36px" : "0"}`,
-                      borderRight: i < 2 ? "0.5px solid rgba(184,149,106,0.1)" : "none",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 0,
-                    }}
-                  >
+                  <div className="cfi-policy-card">
                     <span
                       style={{
                         fontFamily: INTER,

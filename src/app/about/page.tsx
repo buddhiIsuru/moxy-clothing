@@ -210,6 +210,7 @@ export default function AboutPage() {
             background: "#f2f0eb",
             borderTop: "1px solid rgba(26,25,22,.07)",
           }}
+          className="client-voices-sec"
         >
           <p
             style={{
@@ -257,6 +258,7 @@ export default function AboutPage() {
                       background: "#F8F7F4",
                       position: "relative",
                     }}
+                    className="client-review-box"
                   >
                     {/* Opening quote */}
                     <span
@@ -456,6 +458,8 @@ export default function AboutPage() {
           }
           section:first-child { padding: 52px 24px 48px !important; }
           section:first-child > div[style*="position: absolute"] { left: 24px !important; }
+          .client-voices-sec { padding: 48px 20px !important; }
+          .client-review-box { padding: 32px 20px !important; }
         }
 
         @media (min-width: 641px) and (max-width: 900px) {

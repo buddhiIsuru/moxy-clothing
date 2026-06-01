@@ -19,7 +19,7 @@ const fadeUp = (delay = 0) => ({
 });
 
 export default function CartPage() {
-  const { cartItems, cartSubtotal, updateQuantity, removeFromCart } = useCart();
+  const { cartItems, cartSubtotal, updateQuantity, removeFromCart, formatPrice } = useCart();
 
   return (
     <>
@@ -59,6 +59,22 @@ export default function CartPage() {
         }
         .cp-item:hover .cp-img img { transform: scale(1.04) !important; }
 
+        @media (max-width: 540px) {
+          .cp-item {
+            grid-template-columns: 80px 1fr;
+            gap: 16px;
+            padding: 18px 0;
+          }
+          .cp-img {
+            width: 80px;
+          }
+          .cp-price-col {
+            grid-column: 2;
+            align-items: flex-start !important;
+            padding-top: 8px !important;
+          }
+        }
+
         /* ── TEXT ── */
         .cp-cat  { font-size: 8.5px; font-weight: 500; letter-spacing: .26em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
         .cp-name { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 1.15rem; letter-spacing: .02em; color: var(--ink); text-decoration: none; line-height: 1.3; display: block; transition: color .3s; }
@@ -85,6 +101,13 @@ export default function CartPage() {
 
         /* ── PRICE ── */
         .cp-price { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 1.15rem; letter-spacing: .04em; color: var(--ink); white-space: nowrap; }
+        .cp-price-col {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          justify-content: flex-start;
+          padding-top: 2px;
+        }
 
         /* ── SUMMARY ── */
         .cp-summary {
@@ -144,7 +167,7 @@ export default function CartPage() {
         <Grain />
         <Navbar />
 
-        <main style={{ flex: 1, position: "relative", zIndex: 1, maxWidth: 1200, width: "100%", margin: "0 auto", padding: "clamp(6rem, 12vh, 8rem) 40px clamp(4rem, 8vh, 6rem)" }}>
+        <main style={{ flex: 1, position: "relative", zIndex: 1, maxWidth: 1200, width: "100%", margin: "0 auto", padding: "clamp(5rem, 12vh, 8rem) clamp(1.25rem, 5vw, 2.5rem) clamp(4rem, 8vh, 6rem)" }}>
 
           {/* ── Page header ── */}
           <motion.div {...fadeUp(0.05)} style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", paddingBottom: 28, borderBottom: "0.5px solid rgba(26,23,20,.08)", marginBottom: 40 }}>
@@ -233,8 +256,8 @@ export default function CartPage() {
                       </div>
 
                       {/* Price */}
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "flex-start", paddingTop: 2 }}>
-                        <p className="cp-price">${(item.product.price * item.quantity).toLocaleString()}</p>
+                      <div className="cp-price-col">
+                        <p className="cp-price">{formatPrice(item.product.price * item.quantity)}</p>
                       </div>
                     </motion.div>
                   ))}
@@ -248,7 +271,7 @@ export default function CartPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 0 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                     <span className="cp-summary-label">Subtotal ({cartItems.length} {cartItems.length === 1 ? "piece" : "pieces"})</span>
-                    <span className="cp-summary-value">${cartSubtotal.toLocaleString()}</span>
+                    <span className="cp-summary-value">{formatPrice(cartSubtotal)}</span>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                     <span className="cp-summary-label">Delivery</span>
@@ -264,7 +287,7 @@ export default function CartPage() {
 
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                   <span className="cp-summary-total-label">Total</span>
-                  <span className="cp-summary-total">${cartSubtotal.toLocaleString()}</span>
+                  <span className="cp-summary-total">{formatPrice(cartSubtotal)}</span>
                 </div>
 
                 <Link href="/checkout" className="cp-btn-checkout"><span>Proceed to Checkout</span></Link>

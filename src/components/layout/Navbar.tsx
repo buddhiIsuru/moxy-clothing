@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Search, User, ShoppingBag, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useCart } from "@/context/CartContext";
+import { useCart, CurrencyCode } from "@/context/CartContext";
 import { CartDrawer } from "../shared/CartDrawer";
 import logoImage from "@/assets/logo/black (1).png";
 import { navigationService } from "@/services/navigation.service";
@@ -21,7 +21,7 @@ export const Navbar: React.FC = () => {
   const [activeSub, setActiveSub] = useState("New Season");
   const [navLinks, setNavLinks] = useState<NavLink[]>([]);
 
-  const { cartCount, setIsCartOpen } = useCart();
+  const { cartCount, setIsCartOpen, currency, setCurrency } = useCart();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 24);
@@ -32,6 +32,18 @@ export const Navbar: React.FC = () => {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Prevent background scrolling while the mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
 
   return (
     <>
@@ -52,7 +64,7 @@ export const Navbar: React.FC = () => {
           style={{
             maxWidth: 1200,
             margin: "0 auto",
-            padding: "0 40px",
+            padding: "0 clamp(1.25rem, 5vw, 2.5rem)",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -62,7 +74,6 @@ export const Navbar: React.FC = () => {
           {/* Left nav — desktop only */}
           <nav
             style={{
-              display: "flex",
               alignItems: "center",
               gap: 32,
               flex: 1,
@@ -123,7 +134,7 @@ export const Navbar: React.FC = () => {
 
           {/* Right icons — desktop */}
           <div
-            style={{ display: "flex", alignItems: "center", gap: 20, flex: 1, justifyContent: "flex-end" }}
+            style={{ alignItems: "center", gap: 20, flex: 1, justifyContent: "flex-end" }}
             className="hidden lg:flex"
           >
             <button
@@ -222,76 +233,73 @@ export const Navbar: React.FC = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.96 }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
             style={{
               position: "fixed",
               inset: 0,
+              width: "100vw",
+              height: "100vh",
               zIndex: 100,
               background: "#f7f4ef",
               display: "flex",
               flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            {/* Head */}
+            {/* Close Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              style={{
+                position: "absolute",
+                top: 24,
+                right: 24,
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                color: "rgba(14,13,11,0.6)",
+                padding: 8,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              aria-label="Close menu"
+            >
+              <X size={24} strokeWidth={1.3} />
+            </button>
+
+            {/* Links Centered Vertically */}
             <div
               style={{
                 display: "flex",
+                flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "space-between",
-                padding: "16px 20px",
-                borderBottom: "0.5px solid rgba(14,13,11,0.1)",
+                justifyContent: "center",
+                gap: 28,
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
-                <Image
-                  src={logoImage}
-                  alt="Moxy Logo"
-                  height={24}
-                  style={{
-                    height: "24px",
-                    width: "auto",
-                    objectFit: "contain",
-                  }}
-                />
-              </div>
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(14,13,11,0.45)", padding: 0, display: "flex" }}
-                aria-label="Close menu"
-              >
-                <X size={18} strokeWidth={1.3} />
-              </button>
-            </div>
-
-            {/* Links */}
-            <div style={{ borderBottom: "0.5px solid rgba(14,13,11,0.08)" }}>
               {navLinks.map((link, idx) => (
                 <motion.div
                   key={link.label}
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.06 + 0.08, duration: 0.4 }}
+                  transition={{ delay: idx * 0.05 + 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 >
                   <Link
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "14px 20px",
-                      borderBottom: "0.5px solid rgba(14,13,11,0.06)",
                       textDecoration: "none",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
                     }}
                   >
-                    <span style={{ fontFamily: INTER, fontSize: 28, fontWeight: 300, color: "rgba(14,13,11,0.65)", letterSpacing: "0.04em" }}>
+                    <span style={{ fontFamily: INTER, fontSize: 32, fontWeight: 300, color: "#0e0d0b", letterSpacing: "0.04em", textTransform: "uppercase" }}>
                       {link.label}
-                    </span>
-                    <span style={{ fontFamily: INTER, fontSize: 10, fontWeight: 200, letterSpacing: "0.3em", color: "#b8956a" }}>
-                      0{idx + 1}
                     </span>
                   </Link>
                 </motion.div>
@@ -302,10 +310,12 @@ export const Navbar: React.FC = () => {
             <div
               style={{
                 display: "flex",
+                justifyContent: "center",
                 flexWrap: "wrap",
-                gap: "8px 20px",
-                padding: "16px 20px",
-                borderBottom: "0.5px solid rgba(14,13,11,0.08)",
+                gap: "12px 24px",
+                maxWidth: 340,
+                marginTop: 48,
+                padding: "0 20px",
               }}
             >
               {SUB_LINKS.map((item) => (
@@ -314,11 +324,11 @@ export const Navbar: React.FC = () => {
                   onClick={() => setActiveSub(item)}
                   style={{
                     fontFamily: INTER,
-                    fontSize: 11,
-                    fontWeight: 200,
-                    letterSpacing: "0.3em",
+                    fontSize: 10,
+                    fontWeight: 400,
+                    letterSpacing: "0.24em",
                     textTransform: "uppercase",
-                    color: activeSub === item ? "#0e0d0b" : "rgba(14,13,11,0.4)",
+                    color: activeSub === item ? "#b8956a" : "rgba(14,13,11,0.4)",
                     cursor: "pointer",
                   }}
                 >
@@ -327,30 +337,22 @@ export const Navbar: React.FC = () => {
               ))}
             </div>
 
-            {/* Footer */}
-            <div
-              style={{
-                marginTop: "auto",
-                padding: "16px 20px",
-                borderTop: "0.5px solid rgba(14,13,11,0.08)",
-                display: "flex",
-                flexDirection: "column",
-                gap: 16,
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontFamily: INTER, fontSize: 9, fontWeight: 200, letterSpacing: "0.38em", textTransform: "uppercase", color: "rgba(14,13,11,0.3)" }}>
-                  Colombo · London
-                </span>
-                <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-                  <button style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(14,13,11,0.4)", padding: 0, display: "flex" }} aria-label="Search">
-                    <Search size={16} strokeWidth={1.3} />
-                  </button>
-                  <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(14,13,11,0.4)", padding: 0, display: "flex" }} aria-label="Account">
-                    <User size={16} strokeWidth={1.3} />
-                  </Link>
-                </div>
-              </div>
+            {/* Search / User Actions */}
+            <div style={{ display: "flex", alignItems: "center", gap: 28, marginTop: 44 }}>
+              <button
+                style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(14,13,11,0.45)", padding: 4, display: "flex" }}
+                aria-label="Search"
+              >
+                <Search size={18} strokeWidth={1.3} />
+              </button>
+              <Link
+                href="/login"
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(14,13,11,0.45)", padding: 4, display: "flex" }}
+                aria-label="Account"
+              >
+                <User size={18} strokeWidth={1.3} />
+              </Link>
             </div>
           </motion.div>
         )}

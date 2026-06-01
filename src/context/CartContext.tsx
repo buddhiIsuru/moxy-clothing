@@ -15,6 +15,26 @@ export interface ToastInfo {
   type?: "success" | "error";
 }
 
+export type CurrencyCode = "USD" | "LKR" | "GBP" | "EUR";
+
+export const CURRENCIES: Record<CurrencyCode, { symbol: string; rate: number; name: string }> = {
+  USD: { symbol: "$", rate: 1.0, name: "USD" },
+  LKR: { symbol: "LKR ", rate: 300.0, name: "LKR" },
+  GBP: { symbol: "£", rate: 0.78, name: "GBP" },
+  EUR: { symbol: "€", rate: 0.92, name: "EUR" },
+};
+
+export const countryToCurrency = (country: string): CurrencyCode => {
+  const norm = country.toLowerCase().trim();
+  if (norm === "lk" || norm.includes("sri lanka")) return "LKR";
+  if (norm === "gb" || norm.includes("united kingdom") || norm.includes("uk") || norm.includes("britain")) return "GBP";
+  if (
+    norm === "es" || norm === "fr" || norm === "de" || norm === "it" ||
+    norm.includes("spain") || norm.includes("france") || norm.includes("germany") || norm.includes("italy") || norm.includes("europe")
+  ) return "EUR";
+  return "USD";
+};
+
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (product: Product, size: string, quantity?: number) => void;
@@ -28,6 +48,12 @@ interface CartContextType {
   toast: ToastInfo | null;
   triggerToast: (message: string, type?: "success" | "error") => void;
   hideToast: () => void;
+  
+  // Currency System
+  currency: CurrencyCode;
+  setCurrency: (code: CurrencyCode) => void;
+  setCurrencyByCountry: (country: string) => void;
+  formatPrice: (amountInUSD: number) => string;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -132,6 +158,143 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     0
   );
 
+  const detectDefaultCurrency = (): CurrencyCode => {
+    if (typeof window === "undefined") return "USD";
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const lang = navigator.language.toLowerCase();
+      const offset = new Date().getTimezoneOffset();
+      
+      // Sri Lanka and India are GMT+5:30. Timezone offset is -330 minutes
+      if (
+        offset === -330 ||
+        tz.includes("Colombo") ||
+        tz.includes("Kolkata") ||
+        tz.includes("Calcutta") ||
+        tz.includes("Asia/Colombo") ||
+        tz.includes("Asia/Kolkata") ||
+        lang.includes("si") ||
+        lang.includes("ta") ||
+        lang.includes("en-lk")
+      ) {
+        return "LKR";
+      }
+      if (tz.includes("London") || lang.includes("en-gb")) {
+        return "GBP";
+      }
+      if (
+        tz.includes("Madrid") ||
+        tz.includes("Paris") ||
+        tz.includes("Rome") ||
+        tz.includes("Berlin") ||
+        lang.includes("es") ||
+        lang.includes("fr") ||
+        lang.includes("de") ||
+        lang.includes("it")
+      ) {
+        return "EUR";
+      }
+    } catch (e) {
+      console.error("Failed to detect browser timezone/locale:", e);
+    }
+    return "USD";
+  };
+
+  const [currency, setCurrencyState] = useState<CurrencyCode>(() => {
+    if (typeof window === "undefined") return "USD";
+    try {
+      // Prioritize active checkout country selection if present
+      const checkoutCountry = localStorage.getItem("moxy_checkout_country");
+      if (checkoutCountry) {
+        return countryToCurrency(checkoutCountry);
+      }
+      // Otherwise, dynamically auto-detect
+      return detectDefaultCurrency();
+    } catch {
+      return "USD";
+    }
+  });
+
+  // Dynamic client-side GeoIP detection on mount to support VPN changes
+  useEffect(() => {
+    const fetchGeoIP = async () => {
+      // If the user has manually chosen a checkout country, respect that preference
+      const checkoutCountry = localStorage.getItem("moxy_checkout_country");
+      if (checkoutCountry) return;
+
+      // Try primary GeoIP api: ipapi.co
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        const res = await fetch("https://ipapi.co/json/", { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data && (data.country_name || data.country)) {
+            const detectedCountry = data.country_name || data.country;
+            console.log("GeoIP (ipapi.co) detected country:", detectedCountry);
+            setCurrencyState(countryToCurrency(detectedCountry));
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn("ipapi.co failed, attempting secondary fallback:", err);
+      }
+
+      // Try secondary GeoIP api: ipwho.is
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        const res = await fetch("https://ipwho.is/", { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.success && (data.country || data.country_code)) {
+            const detectedCountry = data.country || data.country_code;
+            console.log("GeoIP (ipwho.is) detected country:", detectedCountry);
+            setCurrencyState(countryToCurrency(detectedCountry));
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn("ipwho.is failed, using local fallback:", err);
+      }
+
+      // Local offline fallback
+      setCurrencyState(detectDefaultCurrency());
+    };
+
+    fetchGeoIP();
+  }, []);
+
+  const setCurrency = (code: CurrencyCode) => {
+    setCurrencyState(code);
+    try {
+      localStorage.setItem("moxy_currency", code);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const setCurrencyByCountry = (country: string) => {
+    try {
+      localStorage.setItem("moxy_checkout_country", country);
+    } catch (e) {
+      console.error(e);
+    }
+    const code = countryToCurrency(country);
+    setCurrency(code);
+  };
+
+  const formatPrice = (amountInUSD: number) => {
+    const config = CURRENCIES[currency];
+    const converted = amountInUSD * config.rate;
+    const options = currency === "LKR" ? { maximumFractionDigits: 0 } : { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+    return `${config.symbol}${converted.toLocaleString(undefined, options)}`;
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -147,6 +310,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         toast,
         triggerToast,
         hideToast,
+        currency,
+        setCurrency,
+        setCurrencyByCountry,
+        formatPrice,
       }}
     >
       {children}

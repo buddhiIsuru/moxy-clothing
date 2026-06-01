@@ -30,7 +30,7 @@ const fadeUp = (delay = 0, fromY = 24) => ({
 });
 
 export default function ProductDetailClient({ product, relatedProducts }: ProductDetailClientProps) {
-  const { addToCart, triggerToast } = useCart();
+  const { addToCart, triggerToast, formatPrice } = useCart();
   const [activeImage, setActiveImage]   = useState(0);
   const [selectedSize, setSelectedSize] = useState("");
   const [wishlisted, setWishlisted]     = useState(false);
@@ -221,7 +221,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
         <Grain />
         <Navbar />
 
-        <main style={{ flex: 1, position: "relative", zIndex: 1, maxWidth: 1280, width: "100%", margin: "0 auto", padding: "clamp(6rem, 12vh, 9rem) 40px clamp(5rem, 10vh, 8rem)" }}>
+        <main style={{ flex: 1, position: "relative", zIndex: 1, maxWidth: 1280, width: "100%", margin: "0 auto", padding: "clamp(5rem, 10vh, 8rem) clamp(1.25rem, 5vw, 2.5rem) clamp(4rem, 8vh, 6rem)" }}>
 
           {/* ── Breadcrumb ── */}
           <motion.div {...fadeUp(0.05, 10)}>
@@ -294,7 +294,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
 
               {/* Price */}
               <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: "1.6rem", letterSpacing: ".04em", color: "#7A7269", marginTop: 8 }}>
-                ${product.price.toLocaleString()}
+                {formatPrice(product.price)}
               </p>
 
               <Ornament style={{ margin: "24px 0" }} />

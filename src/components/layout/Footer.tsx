@@ -81,6 +81,7 @@ export const Footer: React.FC = () => {
           .moxy-footer__grid {
             grid-template-columns: 1fr;
             gap: 0;
+            text-align: center;
           }
           .moxy-footer__divider-col { display: none; }
         }
@@ -103,8 +104,23 @@ export const Footer: React.FC = () => {
             border-top: 1px solid var(--rule);
             padding-top: 2rem;
             margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
           }
           .moxy-footer__col:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+          .moxy-footer__link {
+            text-align: center;
+          }
+          .moxy-footer__bottom {
+            justify-content: center !important;
+            text-align: center;
+          }
+          .moxy-footer__legal-links {
+            justify-content: center;
+            width: 100%;
+          }
         }
 
         .moxy-footer__col-title {
@@ -195,7 +211,7 @@ export const Footer: React.FC = () => {
         className="moxy-footer"
         style={{ background: "var(--cream, #F5F1EA)", padding: "5rem 0 3rem" }}
       >
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 3rem" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 clamp(1.25rem, 5vw, 3rem)" }}>
           <div className={`moxy-footer__inner${visible ? " is-visible" : ""}`}>
 
             {/* Wordmark block */}
