@@ -9,9 +9,9 @@ import timeless2 from "@/assets/26_9d4bd9ee-7d5f-4ef7-b0ac-f82de1db6d3f.webp";
 import timeless3 from "@/assets/Timeless0609_ebd045bc-e083-4871-8668-11939692feb5.webp";
 
 export const NAV_LINKS: NavLink[] = [
-  { label: "Men", href: "/mens" },
-  { label: "Women", href: "/womens" },
   { label: "Kids", href: "/kids" },
+  { label: "Women", href: "/womens" },
+  { label: "Men", href: "/mens" },
   { label: "About", href: "/about" },
 ];
 
@@ -420,6 +420,46 @@ export const KIDS_PRODUCTS: Product[] = [
     sizes: ["24", "25", "26", "27", "28", "29"],
     rating: 4.5,
     reviewsCount: 11,
+    originalPrice: false
+  },
+  {
+    id: "k5",
+    name: "Premium Cotton Tee",
+    price: 45,
+    category: "T-shirts",
+    imageUrl: timeless1,
+    hoverImageUrl: timeless2,
+    images: [timeless1, timeless2, timeless3],
+    description: "A premium daily essential for active play, constructed from high-grade organic cotton. Highly breathable, soft, and durable across washes.",
+    details: [
+      "100% GOTS-certified organic cotton.",
+      "Ribbed crewneck collar.",
+      "Relaxed, comfortable fit.",
+      "Machine wash warm, tumble dry low."
+    ],
+    sizes: ["2T", "3T", "4T", "5T"],
+    rating: 4.8,
+    reviewsCount: 12,
+    originalPrice: false
+  },
+  {
+    id: "k6",
+    name: "Organic Sleep Set",
+    price: 85,
+    category: "Nightwear",
+    imageUrl: timeless2,
+    hoverImageUrl: timeless3,
+    images: [timeless2, timeless3, timeless1],
+    description: "Pure Belgian linen night set, crafted for airy comfort and calming sleep. Natural thermoregulation for restful nights.",
+    details: [
+      "100% organic Belgian linen.",
+      "Button-down sleep shirt with contrast piping.",
+      "Lightweight trousers with elastic waistband.",
+      "Hypoallergenic and soft skin feel."
+    ],
+    sizes: ["3T", "4T", "5T", "6T"],
+    rating: 4.9,
+    reviewsCount: 8,
     originalPrice: false
   },
 ];

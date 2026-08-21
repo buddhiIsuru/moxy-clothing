@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, User, ShoppingBag, Menu, X } from "lucide-react";
+import { Search, User, ShoppingBag, Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart, CurrencyCode } from "@/context/CartContext";
 import { CartDrawer } from "../shared/CartDrawer";
@@ -11,7 +11,55 @@ import logoImage from "@/assets/logo/black (1).png";
 import { navigationService } from "@/services/navigation.service";
 import { NavLink } from "@/types";
 
+// Images for mega-dropdown promo panels
+import banner1 from "@/assets/Banner/Cotton-cover-LK_1.webp";
+import timeless1 from "@/assets/03BWEB_16122137-4fb0-4599-b483-0872fb4a4830.webp";
+import timeless2 from "@/assets/26_9d4bd9ee-7d5f-4ef7-b0ac-f82de1db6d3f.webp";
+
 const SUB_LINKS = ["New Season", "Ready to Wear", "Accessories", "Bespoke", "Archive"];
+
+const SUB_CATEGORIES_MAP: Record<string, { label: string; href: string }[]> = {
+  Kids: [
+    { label: "T-shirts", href: "/kids?category=T-shirts" },
+    { label: "Pants", href: "/kids?category=Pants" },
+    { label: "Nightwear", href: "/kids?category=Nightwear" },
+    { label: "Outerwear", href: "/kids?category=Outerwear" },
+    { label: "Knitwear", href: "/kids?category=Knitwear" },
+  ],
+  Women: [
+    { label: "Dresses", href: "/womens?category=Dresses" },
+    { label: "Tailoring", href: "/womens?category=Tailoring" },
+    { label: "Accessories", href: "/womens?category=Accessories" },
+    { label: "Knitwear", href: "/womens?category=Knitwear" },
+  ],
+  Men: [
+    { label: "Outerwear", href: "/mens?category=Outerwear" },
+    { label: "Knitwear", href: "/mens?category=Knitwear" },
+    { label: "Accessories", href: "/mens?category=Accessories" },
+    { label: "Tailoring", href: "/mens?category=Tailoring" },
+  ],
+};
+
+const FEATURED_PANEL_MAP: Record<string, { image: any; title: string; subtitle: string; href: string }> = {
+  Kids: {
+    image: banner1,
+    title: "Petite Luxury",
+    subtitle: "Organic cotton & baby alpaca edit",
+    href: "/kids"
+  },
+  Women: {
+    image: timeless2,
+    title: "Summer Atelier",
+    subtitle: "Fluid silk & couture cuts",
+    href: "/womens"
+  },
+  Men: {
+    image: timeless1,
+    title: "Quiet Form",
+    subtitle: "Structured tailoring & knitwear",
+    href: "/mens"
+  }
+};
 
 const INTER = "'Inter', sans-serif";
 
@@ -20,6 +68,8 @@ export const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSub, setActiveSub] = useState("New Season");
   const [navLinks, setNavLinks] = useState<NavLink[]>([]);
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const [expandedMobileCategory, setExpandedMobileCategory] = useState<string | null>(null);
 
   const { cartCount, setIsCartOpen, currency, setCurrency } = useCart();
 
@@ -49,13 +99,14 @@ export const Navbar: React.FC = () => {
     <>
       {/* ── MAIN HEADER ── */}
       <header
+        onMouseLeave={() => setHoveredCategory(null)}
         style={{
           position: "fixed",
           left: 0,
           width: "100%",
-          zIndex: 50,
+          zIndex: 55,
           background: "#f7f4ef",
-          boxShadow: isScrolled ? "0 4px 32px rgba(0,0,0,0.04)" : "none",
+          boxShadow: isScrolled || hoveredCategory ? "0 4px 32px rgba(0,0,0,0.04)" : "none",
           transition: "top 0.4s ease, box-shadow 0.4s ease",
         }}
       >
@@ -77,35 +128,53 @@ export const Navbar: React.FC = () => {
               alignItems: "center",
               gap: 32,
               flex: 1,
+              height: "100%",
             }}
             className="hidden lg:flex"
           >
-            {navLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                style={{
-                  position: "relative",
-                  fontFamily: INTER,
-                  fontSize: 12,
-                  fontWeight: 600,
-                  letterSpacing: "0.28em",
-                  textTransform: "uppercase" as const,
-                  color: "rgba(14,13,11,0.55)",
-                  textDecoration: "none",
-                  paddingBottom: 2,
-                }}
-                className="group"
-              >
-                <span className="group-hover:text-[#0e0d0b] transition-colors duration-300">
-                  {link.label}
-                </span>
-                <span
-                  className="absolute bottom-0 left-0 h-px w-0 group-hover:w-full transition-all duration-500"
-                  style={{ background: "#b8956a" }}
-                />
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const hasSubs = !!SUB_CATEGORIES_MAP[link.label];
+              return (
+                <div
+                  key={link.label}
+                  style={{ height: "100%", display: "flex", alignItems: "center" }}
+                  onMouseEnter={() => {
+                    if (hasSubs) {
+                      setHoveredCategory(link.label);
+                    } else {
+                      setHoveredCategory(null);
+                    }
+                  }}
+                >
+                  <Link
+                    href={link.href}
+                    style={{
+                      position: "relative",
+                      fontFamily: INTER,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      letterSpacing: "0.28em",
+                      textTransform: "uppercase" as const,
+                      color: hoveredCategory === link.label ? "#0e0d0b" : "rgba(14,13,11,0.55)",
+                      textDecoration: "none",
+                      paddingBottom: 2,
+                    }}
+                    className="group"
+                  >
+                    <span className="group-hover:text-[#0e0d0b] transition-colors duration-300">
+                      {link.label}
+                    </span>
+                    <span
+                      className="absolute bottom-0 left-0 h-px transition-all duration-500"
+                      style={{
+                        background: "#b8956a",
+                        width: hoveredCategory === link.label ? "100%" : "0%"
+                      }}
+                    />
+                  </Link>
+                </div>
+              );
+            })}
           </nav>
 
           {/* Logo — always centred */}
@@ -227,6 +296,174 @@ export const Navbar: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* ── DESKTOP SUB-CATEGORIES MEGA-DROPDOWN ── */}
+        <AnimatePresence>
+          {hoveredCategory && SUB_CATEGORIES_MAP[hoveredCategory] && (
+            <motion.div
+              initial={{ opacity: 0, height: 0, y: -4 }}
+              animate={{ opacity: 1, height: "auto", y: 0 }}
+              exit={{ opacity: 0, height: 0, y: -4 }}
+              transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                background: "rgba(247, 244, 239, 0.96)",
+                backdropFilter: "blur(20px)",
+                borderTop: "1.5px solid rgba(14,13,11,0.04)",
+                borderBottom: "1.5px solid rgba(14,13,11,0.08)",
+                overflow: "hidden",
+                width: "100%"
+              }}
+            >
+              <div
+                style={{
+                  maxWidth: 1200,
+                  margin: "0 auto",
+                  padding: "44px clamp(1.25rem, 5vw, 2.5rem)",
+                  display: "grid",
+                  gridTemplateColumns: "1.2fr 1fr",
+                  gap: 80,
+                }}
+              >
+                {/* Left: Sub-categories columns */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                  <p
+                    style={{
+                      fontFamily: INTER,
+                      fontSize: 9,
+                      fontWeight: 600,
+                      letterSpacing: "0.26em",
+                      textTransform: "uppercase",
+                      color: "#b8956a",
+                    }}
+                  >
+                    Select Sub-Category
+                  </p>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "16px 32px" }}>
+                    {SUB_CATEGORIES_MAP[hoveredCategory].map((sub) => (
+                      <Link
+                        key={sub.label}
+                        href={sub.href}
+                        onClick={() => setHoveredCategory(null)}
+                        className="group/sub"
+                        style={{
+                          fontFamily: INTER,
+                          fontSize: 13,
+                          fontWeight: 400,
+                          letterSpacing: "0.08em",
+                          color: "#0e0d0b",
+                          textDecoration: "none",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 8,
+                          transition: "color 0.3s",
+                        }}
+                      >
+                        <span style={{ transition: "transform 0.3s", display: "inline-block" }} className="group-hover/sub:translate-x-1 group-hover/sub:text-[#b8956a]">
+                          {sub.label}
+                        </span>
+                        <span
+                          style={{
+                            fontSize: 11,
+                            opacity: 0,
+                            color: "#b8956a",
+                            transition: "opacity 0.3s, transform 0.3s",
+                            transform: "translateX(-4px)",
+                          }}
+                          className="group-hover/sub:opacity-100 group-hover/sub:translate-x-0"
+                        >
+                          →
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Right: Curated highlight panel */}
+                {FEATURED_PANEL_MAP[hoveredCategory] && (
+                  <Link
+                    href={FEATURED_PANEL_MAP[hoveredCategory].href}
+                    onClick={() => setHoveredCategory(null)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 28,
+                      background: "rgba(14,13,11,0.02)",
+                      border: "0.5px solid rgba(14,13,11,0.06)",
+                      padding: 20,
+                      textDecoration: "none",
+                    }}
+                    className="group/promo"
+                  >
+                    <div style={{ width: 110, height: 145, position: "relative", overflow: "hidden", flexShrink: 0 }}>
+                      <Image
+                        src={FEATURED_PANEL_MAP[hoveredCategory].image}
+                        alt={FEATURED_PANEL_MAP[hoveredCategory].title}
+                        fill
+                        sizes="110px"
+                        style={{ objectFit: "cover", transition: "transform 1.2s cubic-bezier(0.16, 1, 0.3, 1)" }}
+                        className="group-hover/promo:scale-[1.05]"
+                      />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                      <span
+                        style={{
+                          fontFamily: INTER,
+                          fontSize: 8,
+                          fontWeight: 600,
+                          letterSpacing: "0.24em",
+                          textTransform: "uppercase",
+                          color: "#b8956a",
+                        }}
+                      >
+                        Curated Editorial
+                      </span>
+                      <p
+                        style={{
+                          fontFamily: INTER,
+                          fontSize: 18,
+                          fontWeight: 300,
+                          color: "#0e0d0b",
+                          letterSpacing: "0.02em",
+                        }}
+                      >
+                        {FEATURED_PANEL_MAP[hoveredCategory].title}
+                      </p>
+                      <p
+                        style={{
+                          fontFamily: INTER,
+                          fontSize: 12,
+                          fontWeight: 300,
+                          color: "rgba(14,13,11,0.5)",
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {FEATURED_PANEL_MAP[hoveredCategory].subtitle}
+                      </p>
+                      <span
+                        style={{
+                          fontFamily: INTER,
+                          fontSize: 9,
+                          fontWeight: 600,
+                          letterSpacing: "0.15em",
+                          textTransform: "uppercase",
+                          color: "#0e0d0b",
+                          marginTop: 8,
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 6,
+                          transition: "color 0.3s"
+                        }}
+                        className="group-hover/promo:text-[#b8956a]"
+                      >
+                        Explore Edit <span style={{ transition: "transform 0.3s" }} className="group-hover/promo:translate-x-1">→</span>
+                      </span>
+                    </div>
+                  </Link>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* ── MOBILE FULL-SCREEN MENU ── */}
@@ -281,29 +518,109 @@ export const Navbar: React.FC = () => {
                 gap: 28,
               }}
             >
-              {navLinks.map((link, idx) => (
-                <motion.div
-                  key={link.label}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05 + 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <Link
-                    href={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    style={{
-                      textDecoration: "none",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
+              {navLinks.map((link, idx) => {
+                const hasSubs = !!SUB_CATEGORIES_MAP[link.label];
+                const isExpanded = expandedMobileCategory === link.label;
+                return (
+                  <motion.div
+                    key={link.label}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.05 + 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
                   >
-                    <span style={{ fontFamily: INTER, fontSize: 32, fontWeight: 300, color: "#0e0d0b", letterSpacing: "0.04em", textTransform: "uppercase" }}>
-                      {link.label}
-                    </span>
-                  </Link>
-                </motion.div>
-              ))}
+                    {hasSubs ? (
+                      <button
+                        onClick={() => setExpandedMobileCategory(isExpanded ? null : link.label)}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 8,
+                          fontFamily: INTER,
+                          fontSize: 32,
+                          fontWeight: 300,
+                          color: "#0e0d0b",
+                          letterSpacing: "0.04em",
+                          textTransform: "uppercase",
+                          outline: "none"
+                        }}
+                      >
+                        {link.label}
+                        <ChevronDown
+                          size={20}
+                          style={{
+                            transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                            transition: "transform 0.35s ease",
+                            color: "rgba(14,13,11,0.35)"
+                          }}
+                        />
+                      </button>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        style={{
+                          textDecoration: "none",
+                        }}
+                      >
+                        <span style={{ fontFamily: INTER, fontSize: 32, fontWeight: 300, color: "#0e0d0b", letterSpacing: "0.04em", textTransform: "uppercase" }}>
+                          {link.label}
+                        </span>
+                      </Link>
+                    )}
+
+                    {/* Expandable sub-categories on mobile */}
+                    <AnimatePresence>
+                      {hasSubs && isExpanded && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                          style={{ overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", gap: 14, marginTop: 14 }}
+                        >
+                          <Link
+                            href={link.href}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            style={{
+                              fontFamily: INTER,
+                              fontSize: 12,
+                              fontWeight: 500,
+                              letterSpacing: "0.15em",
+                              textTransform: "uppercase",
+                              color: "#b8956a",
+                              textDecoration: "none",
+                            }}
+                          >
+                            View All {link.label}
+                          </Link>
+                          {SUB_CATEGORIES_MAP[link.label].map((sub) => (
+                            <Link
+                              key={sub.label}
+                              href={sub.href}
+                              onClick={() => setIsMobileMenuOpen(false)}
+                              style={{
+                                fontFamily: INTER,
+                                fontSize: 16,
+                                fontWeight: 300,
+                                letterSpacing: "0.06em",
+                                color: "rgba(14,13,11,0.65)",
+                                textDecoration: "none",
+                              }}
+                            >
+                              {sub.label}
+                            </Link>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })}
             </div>
 
             {/* Sub-links */}

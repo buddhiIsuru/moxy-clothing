@@ -1,6 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+import kidsBanner from "@/assets/Banner/web_bar.png";
+import womensBanner from "@/assets/Banner/womens_banner.png";
+import mensBanner from "@/assets/Banner/mens_banner.png";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, ShoppingBag } from "lucide-react";
@@ -43,8 +47,18 @@ const CollectionProductCard: React.FC<{ product: Product }> = ({ product }) => {
           alt={product.name}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          className="collection-product-image"
+          className="collection-product-image primary-image"
         />
+        {product.hoverImageUrl && (
+          <Image
+            src={product.hoverImageUrl}
+            alt={`${product.name} Hover`}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="collection-product-image hover-image"
+            style={{ opacity: 0 }}
+          />
+        )}
 
         {product.badge && <span className={`collection-badge ${product.badge === "Sale" ? "sale" : ""}`}>{product.badge}</span>}
 
@@ -91,6 +105,46 @@ export function CollectionPage({ collection }: { collection: Collection }) {
   const [sortBy, setSortBy] = useState<SortOption>("featured");
   const categories = collection.categories ?? ["All"];
 
+  const getHeroBanner = (slug: string) => {
+    if (slug === "kids") return kidsBanner;
+    if (slug === "womens") return womensBanner;
+    if (slug === "mens") return mensBanner;
+    return null;
+  };
+  const banner = getHeroBanner(collection.slug);
+
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get("category");
+      if (cat) {
+        const matched = categories.find((c) => c.toLowerCase() === cat.toLowerCase());
+        if (matched) {
+          setActiveCategory(matched);
+        }
+      } else {
+        setActiveCategory("All");
+      }
+    };
+
+    handleUrlChange();
+
+    window.addEventListener("popstate", handleUrlChange);
+
+    let lastSearch = window.location.search;
+    const interval = setInterval(() => {
+      if (window.location.search !== lastSearch) {
+        lastSearch = window.location.search;
+        handleUrlChange();
+      }
+    }, 100);
+
+    return () => {
+      window.removeEventListener("popstate", handleUrlChange);
+      clearInterval(interval);
+    };
+  }, [categories]);
+
   let filtered = [...collection.products];
 
   if (activeCategory !== "All") {
@@ -127,6 +181,9 @@ export function CollectionPage({ collection }: { collection: Collection }) {
           align-items: center;
           gap: 12px;
           position: relative;
+          min-height: clamp(380px, 60vh, 750px);
+          justify-content: center;
+          align-items: center;
         }
 
         .collection-eyebrow,
@@ -286,6 +343,17 @@ export function CollectionPage({ collection }: { collection: Collection }) {
           transition: transform .8s cubic-bezier(.4,0,.2,1);
         }
 
+        .hover-image {
+          position: absolute;
+          inset: 0;
+          opacity: 0;
+          transition: opacity 0.6s cubic-bezier(.4, 0, .2, 1), transform .8s cubic-bezier(.4, 0, .2, 1) !important;
+        }
+
+        .collection-card:hover .hover-image {
+          opacity: 1;
+        }
+
         .collection-card:hover .collection-product-image { transform: scale(1.045); }
 
         .collection-badge {
@@ -386,7 +454,14 @@ export function CollectionPage({ collection }: { collection: Collection }) {
       <Navbar />
 
       <main className="collection-main">
-        <section className="collection-hero">
+        <section
+          className="collection-hero"
+          style={{
+            backgroundImage: banner ? `linear-gradient(to bottom, rgba(14,13,11,0.48), rgba(14,13,11,0.68)), url(${banner.src})` : "none",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
           <Grain style={{ opacity: 0.15 }} />
           <span className="collection-eyebrow">{collection.eyebrow}</span>
           <h1>{collection.title} Collection</h1>

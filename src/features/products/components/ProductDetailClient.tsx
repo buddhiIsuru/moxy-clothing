@@ -31,8 +31,10 @@ const fadeUp = (delay = 0, fromY = 24) => ({
 
 export default function ProductDetailClient({ product, relatedProducts }: ProductDetailClientProps) {
   const { addToCart, triggerToast, formatPrice } = useCart();
+  const colors = product.colors || ["#c8b89a", "#1a1a1a", "#f0e8dc"];
   const [activeImage, setActiveImage]   = useState(0);
   const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [wishlisted, setWishlisted]     = useState(false);
   const [timeLeft, setTimeLeft]         = useState("00:00:00");
 
@@ -307,6 +309,62 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                   <span className="pd-countdown-time">{timeLeft}</span>
                   &nbsp; for next-day delivery
                 </p>
+              </div>
+
+              {/* Color selector */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 500, letterSpacing: ".26em", textTransform: "uppercase", color: "#B8A07A" }}>
+                    Select Color
+                  </p>
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 400, letterSpacing: ".12em", textTransform: "uppercase", color: "#7A7269" }}>
+                    {(() => {
+                      const map: Record<string, string> = {
+                        "#c8b89a": "Ivory Sand",
+                        "#1a1a1a": "Midnight Ink",
+                        "#1a1714": "Midnight Ink",
+                        "#7a7269": "Taupe Mist",
+                        "#f2ede5": "Alabaster Cream",
+                        "#b8a07a": "Atelier Gold",
+                        "#c3b091": "Khaki Sand",
+                        "#8b5e3c": "Warm Chestnut",
+                        "#8b1a1a": "Crimson Wine",
+                        "#e2dcd0": "Off White",
+                        "#f0e8dc": "Alabaster Cream",
+                        "#8bb8e8": "Powder Blue",
+                        "#4a4a4a": "Slate Grey",
+                        "#d5c7b3": "Oatmeal",
+                      };
+                      return map[selectedColor.toLowerCase()] || selectedColor;
+                    })()}
+                  </span>
+                </div>
+                <div style={{ display: "flex", gap: 12 }}>
+                  {colors.map((color) => {
+                    const isSelected = selectedColor === color;
+                    return (
+                      <button
+                        key={color}
+                        type="button"
+                        onClick={() => setSelectedColor(color)}
+                        style={{
+                          width: 30,
+                          height: 30,
+                          borderRadius: "50%",
+                          background: color,
+                          border: isSelected ? "2.5px solid #1A1714" : "1px solid rgba(26,23,20,.18)",
+                          outline: isSelected ? "1.5px solid #B8A07A" : "none",
+                          outlineOffset: "2px",
+                          cursor: "pointer",
+                          transition: "transform 0.25s ease, outline 0.25s ease",
+                          transform: isSelected ? "scale(1.08)" : "scale(1)"
+                        }}
+                        aria-label={`Select color ${color}`}
+                        className="hover:scale-105"
+                      />
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Size selector */}

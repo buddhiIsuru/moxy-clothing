@@ -4,6 +4,7 @@ import { CartProvider } from "@/context/CartContext";
 import { ToastNotification } from "@/components/ui/Toast";
 import { NavigationLoader } from "@/components/layout/NavigationLoader";
 import { InitialLoader } from "@/components/layout/InitialLoader";
+import { WhatsAppFloat } from "@/components/shared/WhatsAppFloat";
 
 export const metadata: Metadata = {
   title: "MOXY | Curated Luxury Clothing & Avant-Garde Design",
@@ -25,6 +26,7 @@ export default function RootLayout({
             {children}
           </InitialLoader>
           <ToastNotification />
+          <WhatsAppFloat />
         </CartProvider>
       </body>
     </html>
